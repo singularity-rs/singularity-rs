@@ -23,9 +23,9 @@ script:
     # - cargo check --verbose
     # - cargo build --verbose
     # - cargo test --verbose --features empty
-  - cargo check
-  - cargo build
-  - cargo test --features empty
+  - cargo check --all --features empty
+  - cargo build --all --features empty
+  - cargo test --all --features empty
 
 
     # If we're building a tag, then publish to crates.io.
