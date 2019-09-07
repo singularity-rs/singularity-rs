@@ -20,8 +20,12 @@ matrix:
 
 
 script:
-  - cargo build --verbose
-  - cargo test --verbose --features empty
+    # - cargo check --verbose
+    # - cargo build --verbose
+    # - cargo test --verbose --features empty
+  - cargo check
+  - cargo build
+  - cargo test --features empty
 
 
     # If we're building a tag, then publish to crates.io.
