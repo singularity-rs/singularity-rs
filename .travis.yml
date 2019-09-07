@@ -1,6 +1,10 @@
 language: rust
 
 
+addons:
+  apt:
+    packages:
+    - libasound2-dev
 
 
 rust:
@@ -20,6 +24,12 @@ script:
   - cargo test --verbose --features empty
 
 
+    # If we're building a tag, then publish to crates.io.
+    # - if [ ! -z "$TRAVIS_TAG" ]; then cargo publish --token $CRATES_TOKEN; fi
+    #
+    # env:
+    #   global:
+    #     secure: <sth>
 
 
 # from: https://github.com/japaric/trust/blob/master/.travis.yml
