@@ -17,7 +17,7 @@ matrix:
 
 script:
   - cargo build --verbose
-  - cargo test --verbose --features empt
+  - cargo test --verbose --features empty
 
 
 
