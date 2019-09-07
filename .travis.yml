@@ -84,7 +84,7 @@ branches:
 notifications:
   email:
       # recipients:
-      #     <e-mail-address>
+      #     - <e-mail-address>
     on_success: change # never
     on_failure: always
 
