@@ -4,7 +4,16 @@ language: rust
 addons:
   apt:
     packages:
+    # needed for amethyst.
     - libasound2-dev
+    # not sure if these are actually needed. something failed though.
+    - pkg-config
+    - libssl-dev
+    - cmake
+    - libfreetype6-dev
+    - libexpat1-dev
+    - libxcb-composite0-dev
+    - libx11-xcb-dev
 
 
 rust:
