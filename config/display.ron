@@ -1,0 +1,4 @@
+(
+  title: "singularity",
+  dimensions: Some((500, 500)),
+)
