@@ -32,9 +32,9 @@ script:
     # - cargo check --verbose
     # - cargo build --verbose
     # - cargo test --verbose --features empty
-  - cargo check --all --features empty
-  - cargo build --all --features empty
-  - cargo test --all --features empty
+  - cargo check --all --no-default-features --features empty
+  - cargo build --all --no-default-features --features empty
+  - cargo test  --all --no-default-features --features empty
 
 
     # If we're building a tag, then publish to crates.io.
