@@ -25,13 +25,9 @@ Stage: in planning.
 
 
 
-## things to keep in mind (for myself)
+## Progress
 
-- decouple graphics itself quite intensely from everything else to make it simple to make a 3D-version as well
-- Make fixed steps of 45° and lengths of [1, 2, 3] * fixed_length
-- [ ] Plan it all out before writing code. Update as needed.
-- [ ] Do the Amethyst tutorial.
-
+A plan of things I intend to implement (which is one of my initial plans for this project) can be found in the [PLAN.md](PLAN.md).
 
 
 
