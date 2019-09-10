@@ -11,7 +11,6 @@
     - [ ] Component (not MVP)
 
 <br/><br/>
-<br/><br/>
 - [ ] System
     - Required System
     - Associated Component
@@ -191,6 +190,7 @@
     - [ ] FreeMovingUnitPresenter
         - [ ] UnitGraphic
         - [ ] ...
+    - ReportState(s)
 
 
 <br/><br/>
@@ -259,7 +259,15 @@
     - UI elements
         - Labels
         - Buttons
+        - HorizontalSlider
+        - VerticalSlider
+        - RadioBoxes
 
+- [ ] TutorialScreen (not MVP)
+    - UI elements
+        - Labels
+        - Buttons
+    
 
 
 
@@ -346,18 +354,42 @@
     - (producing) Platforms
     - ResourceMap
 - [ ] Transport Resources
+    - Units
+    - DistributionManager
+    - Graph
+    - GraphPathPlanning
+    - Resources
+    - Platforms
+    - Roads
+    - Tasks
+    - System: Movement
 - [ ] Provide new Tasks for Units asking for them -> DistributionManager
-- [ ] Calculate flowgraphs of resources (async?)
+    - [ ] JoinGraphs
+    - [ ] SplitGraphs
+    - [ ] AddToGraph
+    - [ ] Calculate flowgraphs of resources (async? MVP?)
+    - Units
+    - Tasks
+    - Resources
+    - Platforms
+    - Roads
+    - Graph
+    - GraphPathPlanning
+    - Channels for communication
 <br/><br/>
 - [ ] 'StoryManager' for advancing the story / levels upon reaching goals
-- [ ] Planning Military maneuvers from the AI
-- [ ] Planning Building and Resource aquirenment from the AI
-<br/><br/>
-- [ ] JoinGraphs
-- [ ] SplitGraphs
-- [ ] AddToGraph
-
-
+    - Map(s)
+    - Level(s)
+    - Goals
+    - Loading level descriptions
+    - ReportState(s)
+- [ ] Planning Military maneuvers from AI (-> MilitaryManager; not MVP)
+    - FreeMovingUnit
+    - TeamNumber
+    - Map(s)
+- [ ] Planning Building and Resource aquiring from AI
+    - DistributionManager
+    - MilitaryManager
 
 
 <br/><br/>
@@ -375,7 +407,7 @@
 - [ ] Everything not in MVP
 
 <br/><br/>
-- [ ] Plan it all out before writing code. Update as needed.
+- [ ] Plan it all out before writing code (in progress). Update as needed.
 - [ ] decouple graphics itself quite intensely from everything else
 - [ ] Actually, adhere to 'Model-View-Controller' schema
 - [ ] make it simple to make a 3D-version as well (plan that one)
