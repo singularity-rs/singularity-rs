@@ -1,3 +1,76 @@
+# Overall Description
+
+The Initial basic idea is to start out with something similar to Achikaps first.
+
+## Achikaps
+You start out with some Platforms. Platforms are connected with Roads, forming
+a Graph. On this Graph, Units can travel. Units can do several Tasks, including
+'Produce', 'Carry', 'Buid' and 'Defend'. Some Platforms are 'Producing'
+platforms, meaning, if is a Unit on this platform 'producing' resources (and
+the required conditions are fulfilled), in specific interavals as many
+resources appear as there are Units 'producing'. 'Carry' describes the carrying
+of Resources from one Platform to another, typically for refining (transforming
+a combination of resources in another), or moving them to the storage. In
+Achikaps, this also includes 'refilling' of Batteries for Laser-defending
+towers or power stations (which require new batteries after some shots or time).
+Building is basically the same as carrying, however Resources are only carried
+for the building of new Platforms or other structures (roads, ...). Building
+platforms happens by creating a blueprint through the build-menu, after which 
+several Tasks for building units are created to transport the required resources.
+New Units can be created by building 'Houses' (also Platforms) and providing it
+with the required resources (usually five not that complex ones). These are then
+carried by 'Carrying' Units, after they received their tasks.
+
+Aforementioned Power Stations provide 'Energy' for all platforms in their
+vicinity. Platforms will not create tasks if they require power but don't have
+any (such as producing facilities, Houses, ...). Power stations have tasks for
+Carrying units to get them batteries, but this only works as long as there are
+batteries available. Batteries are produced in a windmill.
+
+Some of the Production processes require the transportation of resources across
+multiple 'Factory'-platforms to transform them. Initial Resources are 'Pearls'
+(from a 'Factory'), 'Metal' (from a 'Mine', but only if there is a deposit with
+metal next to it). 'Meat' can also be produced with further restraints, by
+'Farms'. The 'Meat Grinder' requires two Meat and one Metal to produce one
+'Food', Houses require four 'Pearls' and one 'Food' for each new Unit produced.
+One House can only produce three new Units. However, if the produced units die,
+new ones can be produced again. A Laboratory requires one Pearl, one Food and
+one Meatto produce one chewing gum.
+
+There is also Defensive Platforms, some of which need to be operated. They
+provide 'Defend'-type tasks for units, and only defend when there are Units
+operating them. Their firepower also depends on the units present. Other
+platforms provide firepower independent of Units, as long as Batteries are
+delivered ('Laser' towers). In some levels, you need to fend of several waves,
+with 20 not being uncommon. Defeated Enemies sometimes leave some Metal on the
+next platform (if it is not full already). In some levels, these resources
+are needed since metal is rare sometimes (as it needs a deposit for a mine).
+
+Recently some more features got added to Achikaps, which I may or may not
+explain in detail, but are not necessary for the core understanding. One added
+part is a slightly more complex military-industrial part and some increased
+efficiency for transporting resources, Boosts, and more.
+
+## Own Ideas
+
+First, I'd like to include just about everything described so far, though maybe
+renaming and/or recoloring the resources. I absolutely like the Graph-based
+idea, also the 'easiness' for producing some, but not all resources. I also
+like how work is distributed and such. I had some hassles with the timing of
+defending, but I think about keeping that as well. Something annoying
+(especially when building larger structures) was that you need to build each
+platform seperately. There is a 'faster' building mode, but I would like to
+create bigger (staged) blueprints as well (like one platform surrounded only by
+houses, with one connection to another platform). When placing Platforms, one
+is free to choose where to set it. It might be worth experimenting with fixed
+degrees instead (8 Platforms -> 45°, 12 -> 30°, 6 -> 60°). I think eight is a
+good number.
+
+
+
+
+
+# Detailed Required Parts
 
 <br/><br/>
 ## Template
