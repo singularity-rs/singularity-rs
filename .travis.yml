@@ -28,11 +28,20 @@ matrix:
   fast_finish: true
 
 
+# Add clippy
+before_script:
+  - rustup component add clippy
+
+
+
+# check, clippy, build, test
 script:
     # - cargo check --verbose
     # - cargo build --verbose
+    # - cargo clippy -- -D warnings
     # - cargo test --verbose --features empty
   - cargo check --all --no-default-features --features empty
+  - cargo clippy -- -D warnings
   - cargo build --all --no-default-features --features empty
   - cargo test  --all --no-default-features --features empty
 
