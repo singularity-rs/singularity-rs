@@ -1,5 +1,11 @@
 language: rust
 
+sudo: true
+
+
+before_install:
+  - sudo apt-get update
+
 
 addons:
   apt:
@@ -14,6 +20,12 @@ addons:
     - libexpat1-dev
     - libxcb-composite0-dev
     - libx11-xcb-dev
+      # packages from kcov
+    - libcurl4-openssl-dev
+    - libelf-dev
+    - libdw-dev
+    - gcc
+    - binutils-dev
 
 
 rust:
@@ -44,6 +56,41 @@ script:
   - cargo clippy -- -D warnings
   - cargo build --all --no-default-features --features empty
   - cargo test  --all --no-default-features --features empty
+
+
+after_success:
+# from https://medium.com/@Razican/continuous-integration-and-code-coverage-report-for-a-rust-project-5dfd4d68fbe5
+# Upload docs (not working yet, requires GH_TOKEN, not sure which rights it needs though
+#   - |
+#       if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_RUST_VERSION" == "stable" && "$TRAVIS_PULL_REQUEST" = "false" && "$TRAVIS_BRANCH" == "master" ]]; then
+#         cargo doc &&
+#         echo "<meta http-equiv=refresh content=0;url=os_balloon/index.html>" > target/doc/index.html &&
+#         git clone https://github.com/davisp/ghp-import.git &&
+#         ./ghp-import/ghp_import.py -n -p -f -m "Documentation upload" -r https://"$GH_TOKEN"@github.com/"$TRAVIS_REPO_SLUG.git" target/doc &&
+#         echo "Uploaded documentation"
+#       fi
+
+# Coverage report
+  - |
+      if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_RUST_VERSION" == "stable" ]]; then
+        wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+        tar xzf master.tar.gz &&
+        cd kcov-master &&
+        mkdir build &&
+        cd build &&
+        cmake .. &&
+        make &&
+        sudo make install &&
+        cd ../.. &&
+        rm -rf kcov-master &&
+        for file in target/debug/singularity_rs-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+        bash <(curl -s https://codecov.io/bash) &&
+        echo "Uploaded code coverage"
+      fi
+
+
+
+
 
 
     # If we're building a tag, then publish to crates.io.
