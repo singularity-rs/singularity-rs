@@ -55,7 +55,8 @@ script:
   - cargo check --all --no-default-features --features empty
   - cargo check --all --no-default-features --features vulkan
   - cargo clippy --all --no-default-features --features empty -- -D warning
-  - cargo clippy --all-targets --all-features -- -D warnings
+  - cargo clippy --all-targest --no-default-features --features vulkan -- -D warning
+    # - cargo clippy --all-targets --all-features -- -D warnings
   - cargo build --all --no-default-features --features empty
   - cargo build --all --no-default-features --features vulkan
   - cargo test  --all --no-default-features --features empty
