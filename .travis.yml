@@ -53,9 +53,13 @@ script:
     # - cargo clippy -- -D warnings
     # - cargo test --verbose --features empty
   - cargo check --all --no-default-features --features empty
-  - cargo clippy -- -D warnings
+  - cargo check --all --no-default-features --features vulkan
+  - cargo clippy --all --no-default-features --features empty -- -D warning
+  - cargo clippy --all-targets --all-features -- -D warnings
   - cargo build --all --no-default-features --features empty
+  - cargo build --all --no-default-features --features vulkan
   - cargo test  --all --no-default-features --features empty
+  - cargo test  --all --no-default-features --features vulkan
 
 
 after_success:
@@ -84,6 +88,7 @@ after_success:
         cd ../.. &&
         rm -rf kcov-master &&
         for file in target/debug/singularity_rs-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+        # for file in target/debug/<FILENAMES>-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
         bash <(curl -s https://codecov.io/bash) &&
         echo "Uploaded code coverage"
       fi
