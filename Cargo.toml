@@ -1,11 +1,15 @@
 [package]
 name = "singularity-rs"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["Felix Karg <fkarg10@gmail.com"]
 edition = "2018"
 
 [dependencies]
-amethyst = "0.12.0"
+amethyst = { git = "https://github.com/amethyst/amethyst", rev = "3f491c88fbaee405c59312b601631f6e227c4422", features = ["vulkan"] }
+# amethyst = { path = "../amethyst", features = ["vulkan"] }
+log = { version = "0.4.6", features = ["serde"] }
+
+
 
 [features]
 default = ["vulkan"]
