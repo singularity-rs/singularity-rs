@@ -43,6 +43,7 @@ matrix:
 # Add clippy
 before_script:
   - rustup component add clippy
+  - rustup component add rustfmt
 
 
 
@@ -52,6 +53,7 @@ script:
     # - cargo build --verbose
     # - cargo clippy -- -D warnings
     # - cargo test --verbose --features empty
+  - rustfmt --check src/**.rs
   - cargo check --all --no-default-features --features empty
   - cargo clippy -- -D warnings
   - cargo build --all --no-default-features --features empty
