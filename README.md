@@ -18,10 +18,10 @@ Stage: in planning.
 - [ ] Sound Manager -> there is something in amethyst
 - [ ] Physics / Game mechanics -> keep looking
 - [ ] Map -> might need custom implementation
-- [ ] UI -> might need somewhat custom implementation
+- [ ] UI -> amethyst has an awesome example for this. Adjust as needed.
 - [ ] Pathfinding (`graph-paths`, `flow-paths`, `heatmap`, `A*`, ...) -> probably custom implementation
 - [ ] Prioritized Task-based work distribution (DistributionManager) -> absolutely custom implementation
-- [ ] Platforms (with all their mechanics, PlatformActions) (will probably result in a combination of entities and systems and event channels) -> most likely custom implementation
+- [ ] Platforms (with all their mechanics, PlatformActions) (will probably result in a combination of entities and systems and event channels) -> custom implementation
 - [ ] The Graphics themselves -> get them somewhere or create own?
 <!-- - [ ] Seperate Utils (?) -->
 
