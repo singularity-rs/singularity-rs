@@ -71,11 +71,13 @@ impl SimpleState for GameState {
 
     fn update(&mut self, _: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         println!("Computing some more whoop-ass...");
-        Trans::Quit
+        // Trans::Quit
+        Trans::None
     }
 }
 
 fn main() {
+    amethyst::start_logger(Default::default());
     let mut game = Application::new("assets/", GameState, GameDataBuilder::default())
         .expect("Fatal error");
     game.run();
