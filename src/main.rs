@@ -41,7 +41,7 @@ impl SimpleState for Example {
         // world.create_entity().with(handle).build();
         // init_output(&mut world);
         world.exec(|mut creator: UiCreator<'_>| {
-            creator.create("ui/own.ron", ());
+            creator.create("ui/example.ron", ());
         });
     }
 
