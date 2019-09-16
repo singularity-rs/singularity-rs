@@ -61,17 +61,6 @@ script:
 
 
 after_success:
-# from https://medium.com/@Razican/continuous-integration-and-code-coverage-report-for-a-rust-project-5dfd4d68fbe5
-# Upload docs (not working yet, requires GH_TOKEN, not sure which rights it needs though
-  - |
-      if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_RUST_VERSION" == "stable" && "$TRAVIS_PULL_REQUEST" = "false" && "$TRAVIS_BRANCH" == "master" ]]; then
-        cargo doc &&
-        echo "<meta http-equiv=refresh content=0;url=os_balloon/index.html>" > target/doc/index.html &&
-        git clone https://github.com/davisp/ghp-import.git &&
-        ./ghp-import/ghp_import.py -n -p -f -m "Documentation upload" -r https://"$GH_TOKEN"@github.com/"$TRAVIS_REPO_SLUG.git" target/doc &&
-        echo "Uploaded documentation"
-      fi
-
 # Coverage report
   - |
       if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_RUST_VERSION" == "stable" ]]; then
@@ -91,17 +80,22 @@ after_success:
         echo "Uploaded code coverage"
       fi
 
+# # from https://medium.com/@Razican/continuous-integration-and-code-coverage-report-for-a-rust-project-5dfd4d68fbe5
+# #   - |
+# #       if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_RUST_VERSION" == "stable" && "$TRAVIS_PULL_REQUEST" = "false" && "$TRAVIS_BRANCH" == "master" ]]; then
+# actually, only build for a tag. Takes forever.
+  - |
+      if [ ! -z "$TRAVIS_TAG" ]; then
+        cargo doc &&
+        echo "<meta http-equiv=refresh content=0;url=singularity_rs/index.html>" > target/doc/index.html &&
+        git clone https://github.com/davisp/ghp-import.git &&
+        ./ghp-import/ghp_import.py -n -p -f -m "Documentation upload" -r https://"$GH_TOKEN"@github.com/"$TRAVIS_REPO_SLUG.git" target/doc &&
+        echo "Uploaded documentation"
+      fi
 
+    # If we're building a tag, then document and publish to crates.io.
+  - if [ ! -z "$TRAVIS_TAG" ]; then cargo publish --token $CRATES_TOKEN; fi
 
-
-
-
-    # If we're building a tag, then publish to crates.io.
-    # - if [ ! -z "$TRAVIS_TAG" ]; then cargo publish --token $CRATES_TOKEN; fi
-    #
-    # env:
-    #   global:
-    #     secure: <sth>
 
 
 # from: https://github.com/japaric/trust/blob/master/.travis.yml
