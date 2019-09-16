@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Format","The image format for the canvas."],["RasterizationOptions","The antialiasing strategy that should be used when rasterizing glyphs."]],"struct":[["Canvas","An in-memory bitmap surface for glyph rasterization."]]});

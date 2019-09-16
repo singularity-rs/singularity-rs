@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Font","A cross-platform loader that uses the FreeType library to load and rasterize fonts."]],"type":[["NativeFont","The handle that the FreeType API natively uses to represent a font."]]});

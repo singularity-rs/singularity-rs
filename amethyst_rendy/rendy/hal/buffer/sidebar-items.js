@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CreationError","Error creating a buffer."]],"struct":[["Access","Buffer access flags."],["Usage","Buffer usage flags."]],"type":[["Offset","An offset inside a buffer, in bytes."],["State","Buffer state."]]});

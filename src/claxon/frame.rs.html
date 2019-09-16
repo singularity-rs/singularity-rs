@@ -1,0 +1,1579 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/claxon-0.4.2/src/frame.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>frame.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../claxon/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+<span id="713">713</span>
+<span id="714">714</span>
+<span id="715">715</span>
+<span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
+<span id="721">721</span>
+<span id="722">722</span>
+<span id="723">723</span>
+<span id="724">724</span>
+<span id="725">725</span>
+<span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="comment">// Claxon -- A FLAC decoding library in Rust</span>
+<span class="comment">// Copyright 2014 Ruud van Asseldonk</span>
+<span class="comment">//</span>
+<span class="comment">// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="comment">// you may not use this file except in compliance with the License.</span>
+<span class="comment">// A copy of the License has been included in the root of the repository.</span>
+
+<span class="doccomment">//! The `frame` module deals with the frames that make up a FLAC stream.</span>
+
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">i32</span>;
+
+<span class="kw">use</span> <span class="ident">crc</span>::{<span class="ident">Crc8Reader</span>, <span class="ident">Crc16Reader</span>};
+<span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>, <span class="ident">fmt_err</span>};
+<span class="kw">use</span> <span class="ident">input</span>::{<span class="ident">Bitstream</span>, <span class="ident">ReadBytes</span>};
+<span class="kw">use</span> <span class="ident">subframe</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
+<span class="kw">enum</span> <span class="ident">BlockingStrategy</span> {
+    <span class="ident">Fixed</span>,
+    <span class="ident">Variable</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
+<span class="kw">enum</span> <span class="ident">BlockTime</span> {
+    <span class="ident">FrameNumber</span>(<span class="ident">u32</span>),
+    <span class="ident">SampleNumber</span>(<span class="ident">u64</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">ChannelAssignment</span> {
+    <span class="doccomment">/// The `n: u8` channels are coded as-is.</span>
+    <span class="ident">Independent</span>(<span class="ident">u8</span>),
+    <span class="doccomment">/// Channel 0 is the left channel, channel 1 is the side channel.</span>
+    <span class="ident">LeftSideStereo</span>,
+    <span class="doccomment">/// Channel 0 is the side channel, channel 1 is the right channel.</span>
+    <span class="ident">RightSideStereo</span>,
+    <span class="doccomment">/// Channel 0 is the mid channel, channel 1 is the side channel.</span>
+    <span class="ident">MidSideStereo</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
+<span class="kw">struct</span> <span class="ident">FrameHeader</span> {
+    <span class="kw">pub</span> <span class="ident">block_time</span>: <span class="ident">BlockTime</span>,
+    <span class="kw">pub</span> <span class="ident">block_size</span>: <span class="ident">u16</span>,
+    <span class="kw">pub</span> <span class="ident">sample_rate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">channel_assignment</span>: <span class="ident">ChannelAssignment</span>,
+    <span class="kw">pub</span> <span class="ident">bits_per_sample</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">FrameHeader</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">channel_assignment</span> {
+            <span class="ident">ChannelAssignment</span>::<span class="ident">Independent</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> <span class="ident">n</span>,
+            <span class="ident">ChannelAssignment</span>::<span class="ident">LeftSideStereo</span> <span class="op">=&gt;</span> <span class="number">2</span>,
+            <span class="ident">ChannelAssignment</span>::<span class="ident">RightSideStereo</span> <span class="op">=&gt;</span> <span class="number">2</span>,
+            <span class="ident">ChannelAssignment</span>::<span class="ident">MidSideStereo</span> <span class="op">=&gt;</span> <span class="number">2</span>,
+        }
+    }
+}
+
+<span class="doccomment">/// Reads a variable-length integer encoded as what is called &quot;UTF-8&quot; coding</span>
+<span class="doccomment">/// in the specification. (It is not real UTF-8.) This function can read</span>
+<span class="doccomment">/// integers encoded in this way up to 36-bit integers.</span>
+<span class="kw">fn</span> <span class="ident">read_var_length_int</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">ReadBytes</span><span class="op">&gt;</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="comment">// The number of consecutive 1s followed by a 0 is the number of additional</span>
+    <span class="comment">// bytes to read.</span>
+    <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">input</span>.<span class="ident">read_u8</span>());
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_additional</span> <span class="op">=</span> <span class="number">0u8</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mask_data</span> <span class="op">=</span> <span class="number">0b0111_1111u8</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mask_mark</span> <span class="op">=</span> <span class="number">0b1000_0000u8</span>;
+
+    <span class="comment">// Determine the number of leading 1s.</span>
+    <span class="kw">while</span> <span class="ident">first</span> <span class="op">&amp;</span> <span class="ident">mask_mark</span> <span class="op">!=</span> <span class="number">0</span> {
+        <span class="ident">read_additional</span> <span class="op">=</span> <span class="ident">read_additional</span> <span class="op">+</span> <span class="number">1</span>;
+        <span class="ident">mask_data</span> <span class="op">=</span> <span class="ident">mask_data</span> <span class="op">&gt;&gt;</span> <span class="number">1</span>;
+        <span class="ident">mask_mark</span> <span class="op">=</span> <span class="ident">mask_mark</span> <span class="op">&gt;&gt;</span> <span class="number">1</span>;
+    }
+
+    <span class="comment">// A single leading 1 is a follow-up byte and thus invalid.</span>
+    <span class="kw">if</span> <span class="ident">read_additional</span> <span class="op">&gt;</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">read_additional</span> <span class="op">==</span> <span class="number">1</span> {
+            <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid variable-length integer&quot;</span>);
+        } <span class="kw">else</span> {
+            <span class="comment">// The number of 1s (if &gt; 1) is the total number of bytes, not the</span>
+            <span class="comment">// number of additional bytes.</span>
+            <span class="ident">read_additional</span> <span class="op">=</span> <span class="ident">read_additional</span> <span class="op">-</span> <span class="number">1</span>;
+        }
+    }
+
+    <span class="comment">// Each additional byte will yield 6 extra bits, so shift the most</span>
+    <span class="comment">// significant bits into the correct position.</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> ((<span class="ident">first</span> <span class="op">&amp;</span> <span class="ident">mask_data</span>) <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&lt;&lt;</span> (<span class="number">6</span> <span class="op">*</span> <span class="ident">read_additional</span>);
+    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">read_additional</span> <span class="kw">as</span> <span class="ident">i16</span>).<span class="ident">rev</span>() {
+        <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">input</span>.<span class="ident">read_u8</span>());
+
+        <span class="comment">// The two most significant bits _must_ be 10.</span>
+        <span class="kw">if</span> <span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0b1100_0000</span> <span class="op">!=</span> <span class="number">0b1000_0000</span> {
+            <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid variable-length integer&quot;</span>);
+        }
+
+        <span class="ident">result</span> <span class="op">=</span> <span class="ident">result</span> <span class="op">|</span> (((<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0b0011_1111</span>) <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&lt;&lt;</span> (<span class="number">6</span> <span class="op">*</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>));
+    }
+
+    <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">verify_read_var_length_int</span>() {
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
+    <span class="kw">use</span> <span class="ident">error</span>::<span class="ident">Error</span>;
+    <span class="kw">use</span> <span class="ident">input</span>::<span class="ident">BufferedReader</span>;
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">BufferedReader</span>::<span class="ident">new</span>(
+        <span class="ident">io</span>::<span class="ident">Cursor</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0x24</span>, <span class="number">0xc2</span>, <span class="number">0xa2</span>, <span class="number">0xe2</span>, <span class="number">0x82</span>, <span class="number">0xac</span>, <span class="number">0xf0</span>, <span class="number">0x90</span>, <span class="number">0x8d</span>,
+                            <span class="number">0x88</span>, <span class="number">0xc2</span>, <span class="number">0x00</span>, <span class="number">0x80</span>]));
+
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">reader</span>).<span class="ident">unwrap</span>(), <span class="number">0x24</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">reader</span>).<span class="ident">unwrap</span>(), <span class="number">0xa2</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">reader</span>).<span class="ident">unwrap</span>(), <span class="number">0x20ac</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">reader</span>).<span class="ident">unwrap</span>(), <span class="number">0x010348</span>);
+
+    <span class="comment">// Two-byte integer with invalid continuation byte should fail.</span>
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">reader</span>).<span class="ident">err</span>().<span class="ident">unwrap</span>(),
+               <span class="ident">Error</span>::<span class="ident">FormatError</span>(<span class="string">&quot;invalid variable-length integer&quot;</span>));
+
+    <span class="comment">// Continuation byte can never be the first byte.</span>
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">reader</span>).<span class="ident">err</span>().<span class="ident">unwrap</span>(),
+               <span class="ident">Error</span>::<span class="ident">FormatError</span>(<span class="string">&quot;invalid variable-length integer&quot;</span>));
+}
+
+<span class="kw">fn</span> <span class="ident">read_frame_header_or_eof</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">ReadBytes</span><span class="op">&gt;</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FrameHeader</span><span class="op">&gt;&gt;</span> {
+    <span class="comment">// The frame header includes a CRC-8 at the end. It can be computed</span>
+    <span class="comment">// automatically while reading, by wrapping the input reader in a reader</span>
+    <span class="comment">// that computes the CRC.</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">crc_input</span> <span class="op">=</span> <span class="ident">Crc8Reader</span>::<span class="ident">new</span>(<span class="ident">input</span>);
+
+    <span class="comment">// First are 14 bits frame sync code, a reserved bit, and blocking stategy.</span>
+    <span class="comment">// If instead of the two bytes we find the end of the stream, return</span>
+    <span class="comment">// `Nothing`, indicating EOF.</span>
+    <span class="kw">let</span> <span class="ident">sync_res_block</span> <span class="op">=</span> <span class="kw">match</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_be_u16_or_eof</span>()) {
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
+        <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
+    };
+
+    <span class="comment">// The first 14 bits must be 11111111111110.</span>
+    <span class="kw">let</span> <span class="ident">sync_code</span> <span class="op">=</span> <span class="ident">sync_res_block</span> <span class="op">&amp;</span> <span class="number">0b1111_1111_1111_1100</span>;
+    <span class="kw">if</span> <span class="ident">sync_code</span> <span class="op">!=</span> <span class="number">0b1111_1111_1111_1000</span> {
+        <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;frame sync code missing&quot;</span>);
+    }
+
+    <span class="comment">// The next bit has a mandatory value of 0 at the moment of writing. The</span>
+    <span class="comment">// spec says &quot;0: mandatory value, 1: reserved for future use&quot;. As it is</span>
+    <span class="comment">// unlikely that the FLAC format will every change, we treat features in</span>
+    <span class="comment">// the spec that are not implemented as `Error::Unsupported`, and this is</span>
+    <span class="comment">// a format error.</span>
+    <span class="kw">if</span> <span class="ident">sync_res_block</span> <span class="op">&amp;</span> <span class="number">0b0000_0000_0000_0010</span> <span class="op">!=</span> <span class="number">0</span> {
+        <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header, encountered reserved value&quot;</span>);
+    }
+
+    <span class="comment">// The final bit determines the blocking strategy.</span>
+    <span class="kw">let</span> <span class="ident">blocking_strategy</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sync_res_block</span> <span class="op">&amp;</span> <span class="number">0b0000_0000_0000_0001</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="ident">BlockingStrategy</span>::<span class="ident">Fixed</span>
+    } <span class="kw">else</span> {
+        <span class="ident">BlockingStrategy</span>::<span class="ident">Variable</span>
+    };
+
+    <span class="comment">// Next are 4 bits block size and 4 bits sample rate.</span>
+    <span class="kw">let</span> <span class="ident">bs_sr</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_u8</span>());
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="number">0u16</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_8bit_bs</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_16bit_bs</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
+    <span class="comment">// There are some pre-defined bit patterns. Some mean &#39;get from end of</span>
+    <span class="comment">// header instead&#39;.</span>
+    <span class="kw">match</span> <span class="ident">bs_sr</span> <span class="op">&gt;&gt;</span> <span class="number">4</span> {
+        <span class="comment">// The value 0000 is reserved.</span>
+        <span class="number">0b0000</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header, encountered reserved value&quot;</span>),
+        <span class="number">0b0001</span> <span class="op">=&gt;</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="number">192</span>,
+        <span class="ident">n</span> <span class="kw">if</span> <span class="number">0b0010</span> <span class="op">&lt;=</span> <span class="ident">n</span> <span class="op">&amp;&amp;</span> <span class="ident">n</span> <span class="op">&lt;=</span> <span class="number">0b0101</span> <span class="op">=&gt;</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="number">576</span> <span class="op">*</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> (<span class="ident">n</span> <span class="op">-</span> <span class="number">2</span>) <span class="kw">as</span> <span class="ident">usize</span>),
+        <span class="number">0b0110</span> <span class="op">=&gt;</span> <span class="ident">read_8bit_bs</span> <span class="op">=</span> <span class="bool-val">true</span>,
+        <span class="number">0b0111</span> <span class="op">=&gt;</span> <span class="ident">read_16bit_bs</span> <span class="op">=</span> <span class="bool-val">true</span>,
+        <span class="ident">n</span> <span class="op">=&gt;</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="number">256</span> <span class="op">*</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> (<span class="ident">n</span> <span class="op">-</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">usize</span>),
+    }
+
+    <span class="comment">// For the sample rate there is a number of pre-defined bit patterns as</span>
+    <span class="comment">// well. Again, some mean &#39;get from end of header instead&#39;.</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_8bit_sr</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_16bit_sr</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_16bit_sr_ten</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
+    <span class="kw">match</span> <span class="ident">bs_sr</span> <span class="op">&amp;</span> <span class="number">0b0000_1111</span> {
+        <span class="number">0b0000</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">None</span>, <span class="comment">// 0000 means &#39;get from streaminfo block&#39;.</span>
+        <span class="number">0b0001</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">88_200</span>),
+        <span class="number">0b0010</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">176_400</span>),
+        <span class="number">0b0011</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">192_000</span>),
+        <span class="number">0b0100</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">8_000</span>),
+        <span class="number">0b0101</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">16_000</span>),
+        <span class="number">0b0110</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">22_050</span>),
+        <span class="number">0b0111</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">24_000</span>),
+        <span class="number">0b1000</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">32_000</span>),
+        <span class="number">0b1001</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">44_100</span>),
+        <span class="number">0b1010</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">48_000</span>),
+        <span class="number">0b1011</span> <span class="op">=&gt;</span> <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">96_000</span>),
+        <span class="number">0b1100</span> <span class="op">=&gt;</span> <span class="ident">read_8bit_sr</span> <span class="op">=</span> <span class="bool-val">true</span>, <span class="comment">// Read Hz from end of header.</span>
+        <span class="number">0b1101</span> <span class="op">=&gt;</span> <span class="ident">read_16bit_sr</span> <span class="op">=</span> <span class="bool-val">true</span>, <span class="comment">// Read Hz from end of header.</span>
+        <span class="number">0b1110</span> <span class="op">=&gt;</span> <span class="ident">read_16bit_sr_ten</span> <span class="op">=</span> <span class="bool-val">true</span>, <span class="comment">// Read tens of Hz from end of header.</span>
+        <span class="comment">// 1111 is invalid to prevent sync-fooling.</span>
+        <span class="comment">// Other values are impossible at this point.</span>
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header&quot;</span>),
+    }
+
+    <span class="comment">// Next are 4 bits channel assignment, 3 bits sample size, and 1 reserved bit.</span>
+    <span class="kw">let</span> <span class="ident">chan_bps_res</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_u8</span>());
+
+    <span class="comment">// The most significant 4 bits determine channel assignment.</span>
+    <span class="kw">let</span> <span class="ident">channel_assignment</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">chan_bps_res</span> <span class="op">&gt;&gt;</span> <span class="number">4</span> {
+        <span class="comment">// Values 0 through 7 indicate n + 1 channels without mixing.</span>
+        <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">8</span> <span class="op">=&gt;</span> <span class="ident">ChannelAssignment</span>::<span class="ident">Independent</span>(<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>),
+        <span class="number">0b1000</span> <span class="op">=&gt;</span> <span class="ident">ChannelAssignment</span>::<span class="ident">LeftSideStereo</span>,
+        <span class="number">0b1001</span> <span class="op">=&gt;</span> <span class="ident">ChannelAssignment</span>::<span class="ident">RightSideStereo</span>,
+        <span class="number">0b1010</span> <span class="op">=&gt;</span> <span class="ident">ChannelAssignment</span>::<span class="ident">MidSideStereo</span>,
+        <span class="comment">// Values 1011 through 1111 are reserved and thus invalid.</span>
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header, encountered reserved value&quot;</span>),
+    };
+
+    <span class="comment">// The next three bits indicate bits per sample.</span>
+    <span class="kw">let</span> <span class="ident">bits_per_sample</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">chan_bps_res</span> <span class="op">&amp;</span> <span class="number">0b0000_1110</span>) <span class="op">&gt;&gt;</span> <span class="number">1</span> {
+        <span class="number">0b000</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>, <span class="comment">// 000 means &#39;get from streaminfo block&#39;.</span>
+        <span class="number">0b001</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="number">8</span>),
+        <span class="number">0b010</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="number">12</span>),
+        <span class="number">0b100</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="number">16</span>),
+        <span class="number">0b101</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="number">20</span>),
+        <span class="number">0b110</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="number">24</span>),
+        <span class="comment">// Values 011 and 111 are reserved. Other values are impossible.</span>
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header, encountered reserved value&quot;</span>),
+    };
+
+    <span class="comment">// The final bit has a mandatory value of 0, it is a reserved bit.</span>
+    <span class="kw">if</span> <span class="ident">chan_bps_res</span> <span class="op">&amp;</span> <span class="number">0b0000_0001</span> <span class="op">!=</span> <span class="number">0</span> {
+        <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header, encountered reserved value&quot;</span>);
+    }
+
+    <span class="kw">let</span> <span class="ident">block_time</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">blocking_strategy</span> {
+        <span class="ident">BlockingStrategy</span>::<span class="ident">Variable</span> <span class="op">=&gt;</span> {
+            <span class="comment">// The sample number is encoded in 8-56 bits, at most a 36-bit int.</span>
+            <span class="kw">let</span> <span class="ident">sample</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">crc_input</span>));
+            <span class="ident">BlockTime</span>::<span class="ident">SampleNumber</span>(<span class="ident">sample</span>)
+        }
+        <span class="ident">BlockingStrategy</span>::<span class="ident">Fixed</span> <span class="op">=&gt;</span> {
+            <span class="comment">// The frame number is encoded in 8-48 bits, at most a 31-bit int.</span>
+            <span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">read_var_length_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">crc_input</span>));
+            <span class="comment">// A frame number larger than 31 bits is therefore invalid.</span>
+            <span class="kw">if</span> <span class="ident">frame</span> <span class="op">&gt;</span> <span class="number">0x7fffffff</span> {
+                <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid frame header, frame number too large&quot;</span>);
+            }
+            <span class="ident">BlockTime</span>::<span class="ident">FrameNumber</span>(<span class="ident">frame</span> <span class="kw">as</span> <span class="ident">u32</span>)
+        }
+    };
+
+    <span class="kw">if</span> <span class="ident">read_8bit_bs</span> {
+        <span class="comment">// 8 bit block size - 1 is stored.</span>
+        <span class="kw">let</span> <span class="ident">bs</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_u8</span>());
+        <span class="ident">block_size</span> <span class="op">=</span> <span class="ident">bs</span> <span class="kw">as</span> <span class="ident">u16</span> <span class="op">+</span> <span class="number">1</span>;
+    }
+    <span class="kw">if</span> <span class="ident">read_16bit_bs</span> {
+        <span class="comment">// 16-bit block size - 1 is stored. Note that the max block size that</span>
+        <span class="comment">// can be indicated in the streaminfo block is a 16-bit number, so a</span>
+        <span class="comment">// value of 0xffff would be invalid because it exceeds the max block</span>
+        <span class="comment">// size, though this is not mentioned explicitly in the specification.</span>
+        <span class="kw">let</span> <span class="ident">bs</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_be_u16</span>());
+        <span class="kw">if</span> <span class="ident">bs</span> <span class="op">==</span> <span class="number">0xffff</span> {
+            <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;invalid block size, exceeds 65535&quot;</span>);
+        }
+        <span class="ident">block_size</span> <span class="op">=</span> <span class="ident">bs</span> <span class="op">+</span> <span class="number">1</span>;
+    }
+
+    <span class="kw">if</span> <span class="ident">read_8bit_sr</span> {
+        <span class="kw">let</span> <span class="ident">sr</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_u8</span>());
+        <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">sr</span> <span class="kw">as</span> <span class="ident">u32</span>);
+    }
+    <span class="kw">if</span> <span class="ident">read_16bit_sr</span> {
+        <span class="kw">let</span> <span class="ident">sr</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_be_u16</span>());
+        <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">sr</span> <span class="kw">as</span> <span class="ident">u32</span>);
+    }
+    <span class="kw">if</span> <span class="ident">read_16bit_sr_ten</span> {
+        <span class="kw">let</span> <span class="ident">sr_ten</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_be_u16</span>());
+        <span class="ident">sample_rate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">sr_ten</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">10</span>);
+    }
+
+    <span class="comment">// Next is an 8-bit CRC that is computed over the entire header so far.</span>
+    <span class="kw">let</span> <span class="ident">computed_crc</span> <span class="op">=</span> <span class="ident">crc_input</span>.<span class="ident">crc</span>();
+    <span class="kw">let</span> <span class="ident">presumed_crc</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_u8</span>());
+
+    <span class="comment">// Do not verify checksum during fuzzing, otherwise malformed input from</span>
+    <span class="comment">// fuzzer won&#39;t reach the actually interesting code.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">fuzzing</span>))]</span>
+    {
+        <span class="kw">if</span> <span class="ident">computed_crc</span> <span class="op">!=</span> <span class="ident">presumed_crc</span> {
+            <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;frame header CRC mismatch&quot;</span>);
+        }
+    }
+
+    <span class="comment">// Silence unused variable warnings.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">fuzzing</span>)]</span>
+    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">computed_crc</span> <span class="op">==</span> <span class="ident">presumed_crc</span>;
+
+    <span class="kw">let</span> <span class="ident">frame_header</span> <span class="op">=</span> <span class="ident">FrameHeader</span> {
+        <span class="ident">block_time</span>: <span class="ident">block_time</span>,
+        <span class="ident">block_size</span>: <span class="ident">block_size</span>,
+        <span class="ident">sample_rate</span>: <span class="ident">sample_rate</span>,
+        <span class="ident">channel_assignment</span>: <span class="ident">channel_assignment</span>,
+        <span class="ident">bits_per_sample</span>: <span class="ident">bits_per_sample</span>,
+    };
+    <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">frame_header</span>))
+}
+
+<span class="doccomment">/// Converts a buffer with left samples and a side channel in-place to left ++ right.</span>
+<span class="kw">fn</span> <span class="ident">decode_left_side</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]) {
+    <span class="kw">let</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>;
+    <span class="kw">let</span> (<span class="ident">mids</span>, <span class="ident">sides</span>) <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">split_at_mut</span>(<span class="ident">block_size</span>);
+    <span class="kw">for</span> (<span class="ident">fst</span>, <span class="ident">snd</span>) <span class="kw">in</span> <span class="ident">mids</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">sides</span>) {
+        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">fst</span>;
+        <span class="kw">let</span> <span class="ident">side</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">snd</span>;
+
+        <span class="comment">// Left is correct already, only the right channel needs to be decoded.</span>
+        <span class="comment">// side = left - right =&gt; right = left - side. A valid FLAC file will</span>
+        <span class="comment">// never overflow here. If we do have an overflow then we decode</span>
+        <span class="comment">// garbage, but at least Rust does not panic in debug mode due to</span>
+        <span class="comment">// overflow.</span>
+        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="ident">left</span>.<span class="ident">wrapping_sub</span>(<span class="ident">side</span>);
+        <span class="kw-2">*</span><span class="ident">snd</span> <span class="op">=</span> <span class="ident">right</span>;
+    }
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">verify_decode_left_side</span>() {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2</span>, <span class="number">5</span>, <span class="number">83</span>, <span class="number">113</span>, <span class="number">127</span>, <span class="op">-</span><span class="number">63</span>, <span class="op">-</span><span class="number">45</span>, <span class="op">-</span><span class="number">15</span>, <span class="number">7</span>, <span class="number">38</span>, <span class="number">142</span>, <span class="number">238</span>, <span class="number">0</span>, <span class="op">-</span><span class="number">152</span>, <span class="op">-</span><span class="number">52</span>, <span class="op">-</span><span class="number">18</span>];
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2</span>, <span class="number">5</span>, <span class="number">83</span>, <span class="number">113</span>, <span class="number">127</span>, <span class="op">-</span><span class="number">63</span>, <span class="op">-</span><span class="number">45</span>, <span class="op">-</span><span class="number">15</span>, <span class="op">-</span><span class="number">5</span>, <span class="op">-</span><span class="number">33</span>, <span class="op">-</span><span class="number">59</span>, <span class="op">-</span><span class="number">125</span>, <span class="number">127</span>, <span class="number">89</span>, <span class="number">7</span>, <span class="number">3</span>];
+    <span class="ident">decode_left_side</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="ident">result</span>);
+}
+
+<span class="doccomment">/// Converts a buffer with right samples and a side channel in-place to left ++ right.</span>
+<span class="kw">fn</span> <span class="ident">decode_right_side</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]) {
+    <span class="kw">let</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>;
+    <span class="kw">let</span> (<span class="ident">mids</span>, <span class="ident">sides</span>) <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">split_at_mut</span>(<span class="ident">block_size</span>);
+    <span class="kw">for</span> (<span class="ident">fst</span>, <span class="ident">snd</span>) <span class="kw">in</span> <span class="ident">mids</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">sides</span>) {
+        <span class="kw">let</span> <span class="ident">side</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">fst</span>;
+        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">snd</span>;
+
+        <span class="comment">// Right is correct already, only the left channel needs to be decoded.</span>
+        <span class="comment">// side = left - right =&gt; left = side + right. A valid FLAC file will</span>
+        <span class="comment">// never overflow here. If we do have an overflow then we decode</span>
+        <span class="comment">// garbage, but at least Rust does not panic in debug mode due to</span>
+        <span class="comment">// overflow.</span>
+        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="ident">side</span>.<span class="ident">wrapping_add</span>(<span class="ident">right</span>);
+        <span class="kw-2">*</span><span class="ident">fst</span> <span class="op">=</span> <span class="ident">left</span>;
+    }
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">verify_decode_right_side</span>() {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">7</span>, <span class="number">38</span>, <span class="number">142</span>, <span class="number">238</span>, <span class="number">0</span>, <span class="op">-</span><span class="number">152</span>, <span class="op">-</span><span class="number">52</span>, <span class="op">-</span><span class="number">18</span>, <span class="op">-</span><span class="number">5</span>, <span class="op">-</span><span class="number">33</span>, <span class="op">-</span><span class="number">59</span>, <span class="op">-</span><span class="number">125</span>, <span class="number">127</span>, <span class="number">89</span>, <span class="number">7</span>, <span class="number">3</span>];
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2</span>, <span class="number">5</span>, <span class="number">83</span>, <span class="number">113</span>, <span class="number">127</span>, <span class="op">-</span><span class="number">63</span>, <span class="op">-</span><span class="number">45</span>, <span class="op">-</span><span class="number">15</span>, <span class="op">-</span><span class="number">5</span>, <span class="op">-</span><span class="number">33</span>, <span class="op">-</span><span class="number">59</span>, <span class="op">-</span><span class="number">125</span>, <span class="number">127</span>, <span class="number">89</span>, <span class="number">7</span>, <span class="number">3</span>];
+    <span class="ident">decode_right_side</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="ident">result</span>);
+}
+
+<span class="doccomment">/// Converts a buffer with mid samples and a side channel in-place to left ++ right.</span>
+<span class="kw">fn</span> <span class="ident">decode_mid_side</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]) {
+    <span class="kw">let</span> <span class="ident">block_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>;
+    <span class="kw">let</span> (<span class="ident">mids</span>, <span class="ident">sides</span>) <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">split_at_mut</span>(<span class="ident">block_size</span>);
+    <span class="kw">for</span> (<span class="ident">fst</span>, <span class="ident">snd</span>) <span class="kw">in</span> <span class="ident">mids</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">sides</span>) {
+        <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">fst</span>;
+        <span class="kw">let</span> <span class="ident">side</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">snd</span>;
+
+        <span class="comment">// Double mid first, and then correct for truncated rounding that</span>
+        <span class="comment">// will have occured if side is odd. Note that samples are never</span>
+        <span class="comment">// expected to exceed 25 bits, so the wrapping multiplication does not</span>
+        <span class="comment">// actually wrap for valid files.</span>
+        <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">mid</span>.<span class="ident">wrapping_mul</span>(<span class="number">2</span>) <span class="op">|</span> (<span class="ident">side</span> <span class="op">&amp;</span> <span class="number">1</span>);
+        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="ident">mid</span>.<span class="ident">wrapping_add</span>(<span class="ident">side</span>) <span class="op">/</span> <span class="number">2</span>;
+        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="ident">mid</span>.<span class="ident">wrapping_sub</span>(<span class="ident">side</span>) <span class="op">/</span> <span class="number">2</span>;
+
+        <span class="kw-2">*</span><span class="ident">fst</span> <span class="op">=</span> <span class="ident">left</span>;
+        <span class="kw-2">*</span><span class="ident">snd</span> <span class="op">=</span> <span class="ident">right</span>;
+    }
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">verify_decode_mid_side</span>() {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>(<span class="op">-</span><span class="number">2</span>, <span class="op">-</span><span class="number">14</span>,  <span class="number">12</span>,   <span class="op">-</span><span class="number">6</span>, <span class="number">127</span>,   <span class="number">13</span>, <span class="op">-</span><span class="number">19</span>,  <span class="op">-</span><span class="number">6</span>,
+                           <span class="number">7</span>,  <span class="number">38</span>, <span class="number">142</span>,  <span class="number">238</span>,   <span class="number">0</span>, <span class="op">-</span><span class="number">152</span>, <span class="op">-</span><span class="number">52</span>, <span class="op">-</span><span class="number">18</span>);
+    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span>      <span class="macro">vec</span><span class="macro">!</span>(<span class="number">2</span>,   <span class="number">5</span>,  <span class="number">83</span>,  <span class="number">113</span>, <span class="number">127</span>,  <span class="op">-</span><span class="number">63</span>, <span class="op">-</span><span class="number">45</span>, <span class="op">-</span><span class="number">15</span>,
+                          <span class="op">-</span><span class="number">5</span>, <span class="op">-</span><span class="number">33</span>, <span class="op">-</span><span class="number">59</span>, <span class="op">-</span><span class="number">125</span>, <span class="number">127</span>,   <span class="number">89</span>,   <span class="number">7</span>,   <span class="number">3</span>);
+    <span class="ident">decode_mid_side</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="ident">result</span>);
+}
+
+<span class="doccomment">/// A block of raw audio samples.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Block</span> {
+    <span class="doccomment">/// The sample number of the first sample in the this block.</span>
+    <span class="ident">first_sample_number</span>: <span class="ident">u64</span>,
+    <span class="doccomment">/// The number of samples in the block.</span>
+    <span class="ident">block_size</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// The number of channels in the block.</span>
+    <span class="ident">channels</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// The decoded samples, the channels stored consecutively.</span>
+    <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Block</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">time</span>: <span class="ident">u64</span>, <span class="ident">bs</span>: <span class="ident">u32</span>, <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Block</span> {
+        <span class="ident">Block</span> {
+            <span class="ident">first_sample_number</span>: <span class="ident">time</span>,
+            <span class="ident">block_size</span>: <span class="ident">bs</span>,
+            <span class="ident">channels</span>: <span class="ident">buffer</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span> <span class="op">/</span> <span class="ident">bs</span>,
+            <span class="ident">buffer</span>: <span class="ident">buffer</span>,
+        }
+    }
+
+    <span class="doccomment">/// Returns a block with 0 channels and 0 samples.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty</span>() <span class="op">-&gt;</span> <span class="ident">Block</span> {
+        <span class="ident">Block</span> {
+            <span class="ident">first_sample_number</span>: <span class="number">0</span>,
+            <span class="ident">block_size</span>: <span class="number">0</span>,
+            <span class="ident">channels</span>: <span class="number">0</span>,
+            <span class="ident">buffer</span>: <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">0</span>),
+        }
+    }
+
+    <span class="doccomment">/// Returns the inter-channel sample number of the first sample in the block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The time is independent of the number of channels. To get the start time</span>
+    <span class="doccomment">/// of the block in seconds, divide this number by the sample rate in the</span>
+    <span class="doccomment">/// streaminfo.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">time</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u64</span> {
+        <span class="self">self</span>.<span class="ident">first_sample_number</span>
+    }
+
+    <span class="doccomment">/// Returns the total number of samples in this block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Samples in different channels are counted as distinct samples.</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="comment">// Note: this cannot overflow, because the block size fits in 16 bits,</span>
+        <span class="comment">// and the number of channels is at most 8.</span>
+        <span class="self">self</span>.<span class="ident">block_size</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">channels</span>
+    }
+
+    <span class="doccomment">/// Returns the number of inter-channel samples in the block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The duration is independent of the number of channels. The returned</span>
+    <span class="doccomment">/// value is also referred to as the *block size*. To get the duration of</span>
+    <span class="doccomment">/// the block in seconds, divide this number by the sample rate in the</span>
+    <span class="doccomment">/// streaminfo.</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">duration</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="self">self</span>.<span class="ident">block_size</span>
+    }
+
+    <span class="doccomment">/// Returns the number of channels in the block.</span>
+    <span class="comment">// TODO: Should a frame know this? #channels must be constant throughout the stream anyway ...</span>
+    <span class="comment">// TODO: Rename to `num_channels` for clarity.</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="self">self</span>.<span class="ident">channels</span>
+    }
+
+    <span class="doccomment">/// Returns the (zero-based) `ch`-th channel as a slice.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if `ch &gt;= channels()`.</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ch</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>] {
+        <span class="kw">let</span> <span class="ident">bsz</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="ident">ch_usz</span> <span class="op">=</span> <span class="ident">ch</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span>[<span class="ident">ch_usz</span> <span class="op">*</span> <span class="ident">bsz</span>..(<span class="ident">ch_usz</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">*</span> <span class="ident">bsz</span>]
+    }
+
+    <span class="doccomment">/// Returns a sample in this block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The value returned is for the zero-based `ch`-th channel of the</span>
+    <span class="doccomment">/// inter-channel sample with index `sample` in this block (so this is not</span>
+    <span class="doccomment">/// the global sample number).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if `ch &gt;= channels()` or if `sample &gt;= len()` for the last</span>
+    <span class="doccomment">/// channel.</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ch</span>: <span class="ident">u32</span>, <span class="ident">sample</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+        <span class="kw">let</span> <span class="ident">bsz</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buffer</span>[<span class="ident">ch</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="ident">bsz</span> <span class="op">+</span> <span class="ident">sample</span> <span class="kw">as</span> <span class="ident">usize</span>];
+    }
+
+    <span class="doccomment">/// Returns the underlying buffer that stores the samples in this block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This allows the buffer to be reused to decode the next frame. The</span>
+    <span class="doccomment">/// capacity of the buffer may be bigger than `len()` times `channels()`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_buffer</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
+        <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buffer</span>;
+    }
+
+    <span class="doccomment">/// Returns an iterator that produces left and right channel samples.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This iterator can be more efficient than requesting a sample directly,</span>
+    <span class="doccomment">/// because it avoids a bounds check.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if the number of channels in the block is not 2.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stereo_samples</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">StereoSamples</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">channels</span> <span class="op">!=</span> <span class="number">2</span> {
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;stereo_samples() must only be called for blocks with two channels.&quot;</span>);
+        }
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>() <span class="op">&gt;=</span> <span class="self">self</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="number">2</span>);
+
+        <span class="ident">StereoSamples</span> {
+            <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span>,
+            <span class="ident">block_duration</span>: <span class="self">self</span>.<span class="ident">block_size</span>,
+            <span class="ident">current_sample</span>: <span class="number">0</span>,
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">verify_block_sample</span>() {
+    <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">Block</span> {
+        <span class="ident">first_sample_number</span>: <span class="number">0</span>,
+        <span class="ident">block_size</span>: <span class="number">5</span>,
+        <span class="ident">channels</span>: <span class="number">3</span>,
+        <span class="ident">buffer</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">23</span>, <span class="number">29</span>, <span class="number">31</span>, <span class="number">37</span>, <span class="number">41</span>, <span class="number">43</span>, <span class="number">47</span>],
+    };
+
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">block</span>.<span class="ident">sample</span>(<span class="number">0</span>, <span class="number">2</span>), <span class="number">5</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">block</span>.<span class="ident">sample</span>(<span class="number">1</span>, <span class="number">3</span>), <span class="number">23</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">block</span>.<span class="ident">sample</span>(<span class="number">2</span>, <span class="number">4</span>), <span class="number">47</span>);
+}
+
+<span class="doccomment">/// An iterator over the stereo sample pairs in a block.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This iterator is produced by `Block::stereo_samples()`.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StereoSamples</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>],
+    <span class="ident">block_duration</span>: <span class="ident">u32</span>,
+    <span class="ident">current_sample</span>: <span class="ident">u32</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">StereoSamples</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">i32</span>, <span class="ident">i32</span>);
+
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">current_sample</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">block_duration</span> {
+            <span class="prelude-val">None</span>
+        } <span class="kw">else</span> {
+            <span class="kw">let</span> <span class="ident">ch_offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">block_duration</span> <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current_sample</span> <span class="kw">as</span> <span class="ident">usize</span>;
+
+            <span class="comment">// Indexing without bounds check is safe here, because the current</span>
+            <span class="comment">// sample is less than the block duration, and the buffer size is at</span>
+            <span class="comment">// least twice the block duration. (There is an assertion for that</span>
+            <span class="comment">// too when the iterator is constructed.)</span>
+            <span class="kw">let</span> <span class="ident">samples</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">get_unchecked</span>(<span class="ident">idx</span>);
+                <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">get_unchecked</span>(<span class="ident">idx</span> <span class="op">+</span> <span class="ident">ch_offset</span>);
+                (<span class="ident">left</span>, <span class="ident">right</span>)
+            };
+
+            <span class="self">self</span>.<span class="ident">current_sample</span> <span class="op">+=</span> <span class="number">1</span>;
+
+            <span class="prelude-val">Some</span>(<span class="ident">samples</span>)
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">verify_block_stereo_samples_iterator</span>() {
+    <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">Block</span> {
+        <span class="ident">first_sample_number</span>: <span class="number">0</span>,
+        <span class="ident">block_size</span>: <span class="number">3</span>,
+        <span class="ident">channels</span>: <span class="number">2</span>,
+        <span class="ident">buffer</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">23</span>, <span class="number">29</span>, <span class="number">31</span>, <span class="number">37</span>, <span class="number">41</span>, <span class="number">43</span>, <span class="number">47</span>],
+    };
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">stereo_samples</span>();
+
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>((<span class="number">2</span>, <span class="number">7</span>)));
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>((<span class="number">3</span>, <span class="number">11</span>)));
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>((<span class="number">5</span>, <span class="number">13</span>)));
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);
+}
+
+<span class="doccomment">/// Reads frames from a stream and exposes decoded blocks as an iterator.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// TODO: for now, it is assumes that the reader starts at a frame header;</span>
+<span class="doccomment">/// no searching for a sync code is performed at the moment.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FrameReader</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">ReadBytes</span><span class="op">&gt;</span> {
+    <span class="ident">input</span>: <span class="ident">R</span>,
+}
+
+<span class="doccomment">/// Either a `Block` or an `Error`.</span>
+<span class="comment">// TODO: The option should not be part of FrameResult.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">FrameResult</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Block</span><span class="op">&gt;&gt;</span>;
+
+<span class="doccomment">/// A function to expand the length of a buffer, or replace the buffer altogether,</span>
+<span class="doccomment">/// so it can hold at least `new_len` elements. The contents of the buffer can</span>
+<span class="doccomment">/// be anything, it is assumed they will be overwritten anyway.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// To use this function safely, the caller must overwrite all `new_len` bytes.</span>
+<span class="kw">fn</span> <span class="ident">ensure_buffer_len</span>(<span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
+    <span class="kw">if</span> <span class="ident">buffer</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">new_len</span> {
+        <span class="comment">// Previous data will be overwritten, so instead of resizing the</span>
+        <span class="comment">// vector if it is too small, we might as well allocate a new one.</span>
+        <span class="comment">// NOTE: In the past we allocated a vector with Vec::with_capacity here,</span>
+        <span class="comment">// setting it to the right length without zeroing (and also setting the</span>
+        <span class="comment">// right length if the capacity was sufficient). However, the</span>
+        <span class="comment">// performance impact of zeroing turned out to be negligible (a 0.2%</span>
+        <span class="comment">// increase in decode times in an adversarial scenario, but a 0.03%</span>
+        <span class="comment">// increase on real-world files when the buffer is recycled). We still</span>
+        <span class="comment">// don&#39;t zero out previous contents of the buffer as it was passed in,</span>
+        <span class="comment">// zeroing only happens on resize or for new allocations.</span>
+        <span class="kw">if</span> <span class="ident">buffer</span>.<span class="ident">capacity</span>() <span class="op">&lt;</span> <span class="ident">new_len</span> {
+            <span class="ident">buffer</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">new_len</span>];
+        } <span class="kw">else</span> {
+            <span class="ident">buffer</span>.<span class="ident">resize</span>(<span class="ident">new_len</span>, <span class="number">0</span>);
+        }
+    } <span class="kw">else</span> {
+        <span class="ident">buffer</span>.<span class="ident">truncate</span>(<span class="ident">new_len</span>);
+    }
+    <span class="ident">buffer</span>
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">ensure_buffer_len_returns_buffer_with_new_len</span>() {
+    <span class="kw">for</span> <span class="ident">capacity</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+        <span class="kw">for</span> <span class="ident">new_len</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+            <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">capacity</span>);
+            <span class="kw">let</span> <span class="ident">resized</span> <span class="op">=</span> <span class="ident">ensure_buffer_len</span>(<span class="ident">buffer</span>, <span class="ident">new_len</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resized</span>.<span class="ident">len</span>(), <span class="ident">new_len</span>);
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">ReadBytes</span><span class="op">&gt;</span> <span class="ident">FrameReader</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Creates a new frame reader that will yield at least one element.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">input</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">FrameReader</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
+        <span class="ident">FrameReader</span> {
+            <span class="ident">input</span>: <span class="ident">input</span>,
+        }
+    }
+
+    <span class="doccomment">/// Decodes the next frame or returns an error if the data was invalid.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The buffer is moved into the returned block, so that the same buffer may</span>
+    <span class="doccomment">/// be reused to decode multiple blocks, avoiding a heap allocation every</span>
+    <span class="doccomment">/// time. It can be retrieved again with `block.into_buffer()`. If the</span>
+    <span class="doccomment">/// buffer is not large enough to hold all samples, a larger buffer is</span>
+    <span class="doccomment">/// allocated automatically.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// TODO: I should really be consistent with &#39;read&#39; and &#39;decode&#39;.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_next_or_eof</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">FrameResult</span> {
+        <span class="comment">// The frame includes a CRC-16 at the end. It can be computed</span>
+        <span class="comment">// automatically while reading, by wrapping the input reader in a reader</span>
+        <span class="comment">// that computes the CRC. If the stream ended before the the frame</span>
+        <span class="comment">// header (so not in the middle of the frame header), return `None`,</span>
+        <span class="comment">// indicating EOF.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">crc_input</span> <span class="op">=</span> <span class="ident">Crc16Reader</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">input</span>);
+        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="kw">match</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">read_frame_header_or_eof</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">crc_input</span>)) {
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">h</span>) <span class="op">=&gt;</span> <span class="ident">h</span>,
+        };
+
+        <span class="comment">// We must allocate enough space for all channels in the block to be</span>
+        <span class="comment">// decoded.</span>
+        <span class="kw">let</span> <span class="ident">total_samples</span> <span class="op">=</span> <span class="ident">header</span>.<span class="ident">channels</span>() <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="ident">header</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">usize</span>;
+
+        <span class="comment">// Ensure the buffer is the right size to hold all samples. For</span>
+        <span class="comment">// correctness, we must be careful to overwrite each byte in the buffer.</span>
+        <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">ensure_buffer_len</span>(<span class="ident">buffer</span>, <span class="ident">total_samples</span>);
+
+        <span class="kw">let</span> <span class="ident">bps</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">header</span>.<span class="ident">bits_per_sample</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
+            <span class="comment">// TODO: if the bps is missing from the header, we must get it from</span>
+            <span class="comment">// the streaminfo block.</span>
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">Unsupported</span>(<span class="string">&quot;header without bits per sample info&quot;</span>)),
+        };
+
+        <span class="comment">// The number of bits per sample must not exceed 32, for we decode into</span>
+        <span class="comment">// an i32. TODO: Turn this into an error instead of panic? Or is it</span>
+        <span class="comment">// enforced elsewhere?</span>
+        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">bps</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&lt;=</span> <span class="number">32</span>);
+
+        <span class="comment">// In the next part of the stream, nothing is byte-aligned any more,</span>
+        <span class="comment">// we need a bitstream. Then we can decode subframes from the bitstream.</span>
+        {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bitstream</span> <span class="op">=</span> <span class="ident">Bitstream</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">crc_input</span>);
+            <span class="kw">let</span> <span class="ident">bs</span> <span class="op">=</span> <span class="ident">header</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">usize</span>;
+
+            <span class="kw">match</span> <span class="ident">header</span>.<span class="ident">channel_assignment</span> {
+                <span class="ident">ChannelAssignment</span>::<span class="ident">Independent</span>(<span class="ident">n_ch</span>) <span class="op">=&gt;</span> {
+                    <span class="kw">for</span> <span class="ident">ch</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n_ch</span> <span class="kw">as</span> <span class="ident">usize</span> {
+                        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>,
+                                              <span class="ident">bps</span>,
+                                              <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[<span class="ident">ch</span> <span class="op">*</span> <span class="ident">bs</span>..(<span class="ident">ch</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">*</span> <span class="ident">bs</span>]));
+                    }
+                }
+                <span class="ident">ChannelAssignment</span>::<span class="ident">LeftSideStereo</span> <span class="op">=&gt;</span> {
+                    <span class="comment">// The side channel has one extra bit per sample.</span>
+                    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>, <span class="ident">bps</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[..<span class="ident">bs</span>]));
+                    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>,
+                                          <span class="ident">bps</span> <span class="op">+</span> <span class="number">1</span>,
+                                          <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[<span class="ident">bs</span>..<span class="ident">bs</span> <span class="op">*</span> <span class="number">2</span>]));
+
+                    <span class="comment">// Then decode the side channel into the right channel.</span>
+                    <span class="ident">decode_left_side</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[..<span class="ident">bs</span> <span class="op">*</span> <span class="number">2</span>]);
+                }
+                <span class="ident">ChannelAssignment</span>::<span class="ident">RightSideStereo</span> <span class="op">=&gt;</span> {
+                    <span class="comment">// The side channel has one extra bit per sample.</span>
+                    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>, <span class="ident">bps</span> <span class="op">+</span> <span class="number">1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[..<span class="ident">bs</span>]));
+                    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>, <span class="ident">bps</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[<span class="ident">bs</span>..<span class="ident">bs</span> <span class="op">*</span> <span class="number">2</span>]));
+
+                    <span class="comment">// Then decode the side channel into the left channel.</span>
+                    <span class="ident">decode_right_side</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[..<span class="ident">bs</span> <span class="op">*</span> <span class="number">2</span>]);
+                }
+                <span class="ident">ChannelAssignment</span>::<span class="ident">MidSideStereo</span> <span class="op">=&gt;</span> {
+                    <span class="comment">// Decode mid as the first channel, then side with one</span>
+                    <span class="comment">// extra bitp per sample.</span>
+                    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>, <span class="ident">bps</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[..<span class="ident">bs</span>]));
+                    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">subframe</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bitstream</span>,
+                                          <span class="ident">bps</span> <span class="op">+</span> <span class="number">1</span>,
+                                          <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[<span class="ident">bs</span>..<span class="ident">bs</span> <span class="op">*</span> <span class="number">2</span>]));
+
+                    <span class="comment">// Then decode mid-side channel into left-right.</span>
+                    <span class="ident">decode_mid_side</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>[..<span class="ident">bs</span> <span class="op">*</span> <span class="number">2</span>]);
+                }
+            }
+
+            <span class="comment">// When the bitstream goes out of scope, we can use the `input`</span>
+            <span class="comment">// reader again, which will be byte-aligned. The specification</span>
+            <span class="comment">// dictates that padding should consist of zero bits, but we do not</span>
+            <span class="comment">// enforce this here.</span>
+            <span class="comment">// TODO: It could be enforced by having a read_to_byte_aligned</span>
+            <span class="comment">// method on the bit reader; it&#39;d be a simple comparison.</span>
+        }
+
+        <span class="comment">// The frame footer is a 16-bit CRC.</span>
+        <span class="kw">let</span> <span class="ident">computed_crc</span> <span class="op">=</span> <span class="ident">crc_input</span>.<span class="ident">crc</span>();
+        <span class="kw">let</span> <span class="ident">presumed_crc</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">crc_input</span>.<span class="ident">read_be_u16</span>());
+
+        <span class="comment">// Do not verify checksum during fuzzing, otherwise malformed input from</span>
+        <span class="comment">// the fuzzer won&#39;t reach the actually interesting code.</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">fuzzing</span>))]</span>
+        {
+            <span class="kw">if</span> <span class="ident">computed_crc</span> <span class="op">!=</span> <span class="ident">presumed_crc</span> {
+                <span class="kw">return</span> <span class="ident">fmt_err</span>(<span class="string">&quot;frame CRC mismatch&quot;</span>);
+            }
+        }
+
+        <span class="comment">// Silence unused variable warnings.</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">fuzzing</span>)]</span>
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">computed_crc</span> <span class="op">==</span> <span class="ident">presumed_crc</span>;
+
+        <span class="comment">// TODO: constant block size should be verified if a frame number is</span>
+        <span class="comment">// encountered.</span>
+        <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">header</span>.<span class="ident">block_time</span> {
+            <span class="ident">BlockTime</span>::<span class="ident">FrameNumber</span>(<span class="ident">fnr</span>) <span class="op">=&gt;</span> <span class="ident">header</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">u64</span> <span class="op">*</span> <span class="ident">fnr</span> <span class="kw">as</span> <span class="ident">u64</span>,
+            <span class="ident">BlockTime</span>::<span class="ident">SampleNumber</span>(<span class="ident">snr</span>) <span class="op">=&gt;</span> <span class="ident">snr</span>,
+        };
+
+        <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">Block</span>::<span class="ident">new</span>(<span class="ident">time</span>, <span class="ident">header</span>.<span class="ident">block_size</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">buffer</span>);
+
+        <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">block</span>))
+    }
+
+    <span class="doccomment">/// Destroy the frame reader, returning the wrapped reader.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_inner</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">R</span> {
+        <span class="self">self</span>.<span class="ident">input</span>
+    }
+}
+
+<span class="comment">// TODO: implement Iterator&lt;Item = FrameResult&gt; for FrameReader, with an</span>
+<span class="comment">// accurate size hint.</span>
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "claxon";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

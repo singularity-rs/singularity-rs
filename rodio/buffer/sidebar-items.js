@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SamplesBuffer","A buffer of samples treated as a source."]]});

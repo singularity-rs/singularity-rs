@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["decode","Decodes a subframe into the provided block-size buffer."],["extend_sign_u32","Given a signed two's complement integer in the `bits` least significant bits of `val`, extends the sign bit to a valid 32-bit signed integer."]]});

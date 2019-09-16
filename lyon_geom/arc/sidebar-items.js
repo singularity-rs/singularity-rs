@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Arc","An elliptic arc curve segment."],["ArcFlags","Flag parameters for arcs as described by the SVG specification."],["SvgArc","An elliptic arc curve segment using the SVG's end-point notation."]],"type":[["Flattened","A flattening iterator for arc segments."]]});

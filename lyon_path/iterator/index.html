@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `iterator` mod in crate `lyon_path`."><meta name="keywords" content="rust, rustlang, rust-lang, iterator"><title>lyon_path::iterator - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../lyon_path/index.html'><div class='logo-container'><img src='https://nical.github.io/lyon-doc/lyon-logo.svg' alt='logo'></div></a><p class='location'>Module iterator</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li></ul></div><p class='location'><a href='../index.html'>lyon_path</a></p><script>window.sidebarCurrent = {name: 'iterator', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/lyon_path/iterator.rs.html#1-567' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>lyon_path</a>::<wbr><a class="mod" href=''>iterator</a></span></h1><div class='docblock'><p>Tools to iterate over paths.</p>
+<h1 id="lyon-path-iterators" class="section-header"><a href="#lyon-path-iterators">Lyon path iterators</a></h1><h2 id="overview" class="section-header"><a href="#overview">Overview</a></h2>
+<p>This module provides a collection of traits to extend the Iterator trait with
+information about the state of the cursor moving along the path. This is useful
+because the way some events are described require to have information about the
+previous events. For example the event <code>LinTo</code> gives the next position and it is
+generally useful to have access to the current position in order to make something
+out of it. Likewise, Some Svg events are given in relative coordinates and/or
+are expressed in a way that the first control point is deduced from the position
+of the previous control point.</p>
+<p>All of this extra information is conveniently exposed in the <code>PathState</code> struct
+that can be accessed by <code>PathIterator</code>, <code>SvgIterator</code> and <code>FlattenedIterator</code>.</p>
+<p>The <code>PathIter&lt;Iter&gt;</code> adapter automatically implements <code>PathIterator</code> for
+any <code>Iter</code> that implements <code>Iterator&lt;PathEvent&gt;</code></p>
+<p>This module provides adapters between these iterator types. For example iterating
+over a sequence of SVG events can be automatically translated into iterating over
+simpler path events which express all positions with absolute coordinates, among
+other things.</p>
+<p>The trait <code>PathIterator</code> is what some of the tessellation algorithms
+of the <code>lyon_tessellation</code> crate take as input.</p>
+<h2 id="examples" class="section-header"><a href="#examples">Examples</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">lyon_path</span>;
+<span class="kw">use</span> <span class="ident">lyon_path</span>::<span class="ident">iterator</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">lyon_path</span>::<span class="ident">math</span>::{<span class="ident">point</span>, <span class="ident">vector</span>};
+<span class="kw">use</span> <span class="ident">lyon_path</span>::{<span class="ident">PathEvent</span>, <span class="ident">SvgEvent</span>, <span class="ident">FlattenedEvent</span>};
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="kw">let</span> <span class="ident">events</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+        <span class="ident">SvgEvent</span>::<span class="ident">MoveTo</span>(<span class="ident">point</span>(<span class="number">1.0</span>, <span class="number">1.0</span>)),
+        <span class="ident">SvgEvent</span>::<span class="ident">RelativeQuadraticTo</span>(<span class="ident">vector</span>(<span class="number">4.0</span>, <span class="number">5.0</span>), <span class="ident">vector</span>(<span class="op">-</span><span class="number">1.0</span>, <span class="number">4.0</span>)),
+        <span class="ident">SvgEvent</span>::<span class="ident">SmoothCubicTo</span>(<span class="ident">point</span>(<span class="number">3.0</span>, <span class="number">1.0</span>), <span class="ident">point</span>(<span class="number">10.0</span>, <span class="op">-</span><span class="number">3.0</span>)),
+        <span class="ident">SvgEvent</span>::<span class="ident">Close</span>,
+    ];
+
+    <span class="comment">// A simple std::iter::Iterator&lt;SvgEvent&gt;,</span>
+    <span class="kw">let</span> <span class="ident">simple_iter</span> <span class="op">=</span> <span class="ident">events</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>();
+
+    <span class="comment">// Make it a SvgIterator (keeps tracks of the path state).</span>
+    <span class="kw">let</span> <span class="ident">svg_path_iter</span> <span class="op">=</span> <span class="ident">SvgPathIter</span>::<span class="ident">new</span>(<span class="ident">simple_iter</span>);
+
+    <span class="comment">// Make it a PathIterator (iterates on simpler PathEvents).</span>
+    <span class="kw">let</span> <span class="ident">path_iter</span> <span class="op">=</span> <span class="ident">svg_path_iter</span>.<span class="ident">path_events</span>();
+    <span class="comment">// Equivalent to:</span>
+    <span class="comment">// let path_iter = PathEvents::new(svg_path_iter);</span>
+
+    <span class="comment">// Make it an iterator over even simpler primitives: FlattenedEvent,</span>
+    <span class="comment">// which do not contain any curve. To do so we approximate each curve</span>
+    <span class="comment">// linear segments according to a tolerance threshold which controls</span>
+    <span class="comment">// the tradeoff between fidelity of the approximation and amount of</span>
+    <span class="comment">// generated events. Let&#39;s use a tolerance threshold of 0.01.</span>
+    <span class="comment">// The beauty of this approach is that the flattening happens lazily</span>
+    <span class="comment">// while iterating with no memory allocation.</span>
+    <span class="kw">let</span> <span class="ident">flattened_iter</span> <span class="op">=</span> <span class="ident">path_iter</span>.<span class="ident">flattened</span>(<span class="number">0.01</span>);
+    <span class="comment">// equivalent to:</span>
+    <span class="comment">// let flattened = Flattened::new(0.01, path_iter);</span>
+
+    <span class="kw">for</span> <span class="ident">evt</span> <span class="kw">in</span> <span class="ident">flattened_iter</span> {
+        <span class="kw">match</span> <span class="ident">evt</span> {
+            <span class="ident">FlattenedEvent</span>::<span class="ident">MoveTo</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> { <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot; - move to {:?}&quot;</span>, <span class="ident">p</span>); }
+            <span class="ident">FlattenedEvent</span>::<span class="ident">LineTo</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> { <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot; - line to {:?}&quot;</span>, <span class="ident">p</span>); }
+            <span class="ident">FlattenedEvent</span>::<span class="ident">Close</span> <span class="op">=&gt;</span> { <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot; - close&quot;</span>); }
+        }
+    }
+}</pre></div>
+<p>An equivalent (but shorter) version of the above code takes advantage of the
+fact you can get a flattening iterator directly from an <code>SvgIterator</code>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">lyon_path</span>;
+<span class="kw">use</span> <span class="ident">lyon_path</span>::<span class="ident">iterator</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">lyon_path</span>::<span class="ident">math</span>::{<span class="ident">point</span>, <span class="ident">vector</span>};
+<span class="kw">use</span> <span class="ident">lyon_path</span>::<span class="ident">SvgEvent</span>;
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="kw">let</span> <span class="ident">events</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+        <span class="ident">SvgEvent</span>::<span class="ident">MoveTo</span>(<span class="ident">point</span>(<span class="number">1.0</span>, <span class="number">1.0</span>)),
+        <span class="ident">SvgEvent</span>::<span class="ident">RelativeQuadraticTo</span>(<span class="ident">vector</span>(<span class="number">4.0</span>, <span class="number">5.0</span>), <span class="ident">vector</span>(<span class="op">-</span><span class="number">1.0</span>, <span class="number">4.0</span>)),
+        <span class="ident">SvgEvent</span>::<span class="ident">SmoothCubicTo</span>(<span class="ident">point</span>(<span class="number">3.0</span>, <span class="number">1.0</span>), <span class="ident">point</span>(<span class="number">10.0</span>, <span class="op">-</span><span class="number">3.0</span>)),
+        <span class="ident">SvgEvent</span>::<span class="ident">Close</span>,
+    ];
+
+    <span class="kw">for</span> <span class="ident">evt</span> <span class="kw">in</span> <span class="ident">SvgPathIter</span>::<span class="ident">new</span>(<span class="ident">events</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>()).<span class="ident">flattened</span>(<span class="number">0.01</span>) {
+        <span class="comment">// ...</span>
+    }
+}</pre></div>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.Flattened.html" title='lyon_path::iterator::Flattened struct'>Flattened</a></td><td class='docblock-short'><p>An iterator that consumes an PathIterator and yields FlattenedEvents.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.FromPolyline.html" title='lyon_path::iterator::FromPolyline struct'>FromPolyline</a></td><td class='docblock-short'><p>An iterator that consumes an iterator of <code>Point</code>s and produces <code>FlattenedEvent</code>s.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PathEvents.html" title='lyon_path::iterator::PathEvents struct'>PathEvents</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.PathIter.html" title='lyon_path::iterator::PathIter struct'>PathIter</a></td><td class='docblock-short'><p>An adapater iterator that implements PathIterator on top of an Iterator&lt;Item=PathEvent&gt;.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SvgPathIter.html" title='lyon_path::iterator::SvgPathIter struct'>SvgPathIter</a></td><td class='docblock-short'><p>An adapater iterator that implements SvgIterator on top of an Iterator&lt;Item=SvgEvent&gt;.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Transformed.html" title='lyon_path::iterator::Transformed struct'>Transformed</a></td><td class='docblock-short'><p>Applies a 2D transform to a path iterator and yields the resulting path iterator.</p>
+</td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.FlattenedIterator.html" title='lyon_path::iterator::FlattenedIterator trait'>FlattenedIterator</a></td><td class='docblock-short'><p>An extension to the common Iterator interface, that adds information which is useful when
+chaining path-specific iterators.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.PathIterator.html" title='lyon_path::iterator::PathIterator trait'>PathIterator</a></td><td class='docblock-short'><p>An extension to the common Iterator interface, that adds information which is useful when
+chaining path-specific iterators.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.QuadraticPathIterator.html" title='lyon_path::iterator::QuadraticPathIterator trait'>QuadraticPathIterator</a></td><td class='docblock-short'><p>An extension to the common Iterator interface, that adds information which is useful when
+chaining path-specific iterators.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.SvgIterator.html" title='lyon_path::iterator::SvgIterator trait'>SvgIterator</a></td><td class='docblock-short'><p>An extension to the common Iterator interface, that adds information which is useful when
+chaining path-specific iterators.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "lyon_path";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

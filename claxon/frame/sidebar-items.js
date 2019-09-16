@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Block","A block of raw audio samples."],["FrameReader","Reads frames from a stream and exposes decoded blocks as an iterator."],["StereoSamples","An iterator over the stereo sample pairs in a block."]],"type":[["FrameResult","Either a `Block` or an `Error`."]]});

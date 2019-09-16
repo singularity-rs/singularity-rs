@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `delegate_glyph_brush_builder_fns` macro in crate `glyph_brush`."><meta name="keywords" content="rust, rustlang, rust-lang, delegate_glyph_brush_builder_fns"><title>glyph_brush::delegate_glyph_brush_builder_fns - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc macro"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../glyph_brush/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class='location'><a href='index.html'>glyph_brush</a></p><script>window.sidebarCurrent = {name: 'delegate_glyph_brush_builder_fns', ty: 'macro', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/glyph_brush/glyph_brush/builder.rs.html#280-367' title='goto source code'>[src]</a></span><span class='in-band'>Macro <a href='index.html'>glyph_brush</a>::<wbr><a class="macro" href=''>delegate_glyph_brush_builder_fns</a></span></h1><div class="docblock type-decl hidden-by-usual-hider"><div class="example-wrap"><pre class="rust macro">
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">delegate_glyph_brush_builder_fns</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> { ... };
+}</pre></div>
+</div><div class='docblock'><p>Macro to delegate builder methods to an inner <code>glyph_brush::GlyphBrushBuilder</code></p>
+<p>Implements:</p>
+<ul>
+<li><code>add_font_bytes</code></li>
+<li><code>add_font</code></li>
+<li><code>initial_cache_size</code></li>
+<li><code>gpu_cache_scale_tolerance</code></li>
+<li><code>gpu_cache_position_tolerance</code></li>
+<li><code>gpu_cache_align_4x4</code></li>
+<li><code>cache_glyph_positioning</code></li>
+<li><code>cache_glyph_drawing</code></li>
+</ul>
+<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">glyph_brush</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="ident">BuildHasher</span>;
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DownstreamGlyphBrushBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">H</span><span class="op">&gt;</span> {
+    <span class="ident">inner</span>: <span class="ident">glyph_brush</span>::<span class="ident">GlyphBrushBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">H</span><span class="op">&gt;</span>,
+    <span class="ident">some_config</span>: <span class="ident">bool</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">H</span>: <span class="ident">BuildHasher</span><span class="op">&gt;</span> <span class="ident">DownstreamGlyphBrushBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">H</span><span class="op">&gt;</span> {
+    <span class="macro">delegate_glyph_brush_builder_fns</span><span class="macro">!</span>(<span class="ident">inner</span>);
+
+    <span class="doccomment">/// Sets some downstream configuration</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">some_config</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">some_config</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">some_config</span> <span class="op">=</span> <span class="ident">some_config</span>;
+        <span class="self">self</span>
+    }
+
+    <span class="comment">// Must be manually delegated</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">section_hasher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">BuildHasher</span><span class="op">&gt;</span>(
+        <span class="self">self</span>,
+        <span class="ident">section_hasher</span>: <span class="ident">T</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">DownstreamGlyphBrushBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="ident">DownstreamGlyphBrushBuilder</span> {
+            <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">section_hasher</span>(<span class="ident">section_hasher</span>),
+            <span class="ident">some_config</span>: <span class="self">self</span>.<span class="ident">some_config</span>,
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DownstreamGlyphBrush</span> {
+        <span class="comment">// ...</span>
+    }
+}</pre></div>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "glyph_brush";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

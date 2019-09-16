@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["UiEventHandlerSystem","This shows how to handle UI events."],["UiEventHandlerSystemDesc","Builds a `UiEventHandlerSystem`."]]});

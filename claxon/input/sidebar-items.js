@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Bitstream","Wraps a `Reader` to facilitate reading that is not byte-aligned."],["BufferedReader","Similar to `std::io::BufRead`, but more performant."]],"trait":[["ReadBytes","Provides convenience methods to make input less cumbersome."]]});

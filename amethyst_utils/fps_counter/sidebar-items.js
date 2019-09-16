@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FpsCounter","The FpsCounter resource needed by the FpsCounterSystem."],["FpsCounterBundle","Automatically adds a FpsCounterSystem and a FpsCounter resource with the specified sample size."],["FpsCounterSystem","Add this system to your game to automatically push FPS values to the FpsCounter resource with id 0"]]});
