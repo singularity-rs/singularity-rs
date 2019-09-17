@@ -43,3 +43,9 @@ To run the game, simply use `cargo run`.
 
 On macOS: `cargo run --no-default-features --features "metal"`.
 
+
+## People to thank
+
+I have to thank Yvan Satyawan [yvan674](https://github.com/yvan674) for providing the Logo (Splash.jpeg and Splash2.jpg).
+
+
