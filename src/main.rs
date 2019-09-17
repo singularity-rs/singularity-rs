@@ -34,14 +34,8 @@ struct Example {
 impl SimpleState for Example {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
-        // Initialise the scene with an object, a light and a camera.
-        // let handle = world.exec(|loader: PrefabLoader<'_, MyPrefabData>| {
-        //     loader.load("prefab/sphere.ron", RonFormat, ())
-        // });
-        // world.create_entity().with(handle).build();
-        // init_output(&mut world);
         world.exec(|mut creator: UiCreator<'_>| {
-            creator.create("ui/example.ron", ());
+            creator.create("ui/own.ron", ());
         });
     }
 
@@ -103,7 +97,7 @@ impl SimpleState for Example {
         {
             if let Some(random_text) = self.random_text.and_then(|entity| ui_text.get_mut(entity)) {
                 if let Ok(value) = random_text.text.parse::<i32>() {
-                    let mut new_value = value * 10;
+                    let mut new_value = value * 2;
                     if new_value > 100_000 {
                         new_value = 1;
                     }
