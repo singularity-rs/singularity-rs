@@ -9,9 +9,9 @@ echo Updating Rust version
 rustup update
 
 echo Testing with default version
-rustfmt --check src/**.rs
-cargo $1 check --all --no-default-features --features empty
+cargo fmt --all -- --check
 cargo $1 clippy -- -D warnings
+cargo $1 check --all --no-default-features --features empty
 cargo $1 build --all --no-default-features --features empty
 cargo $1 test  --all --no-default-features --features empty
 
