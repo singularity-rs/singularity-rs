@@ -131,7 +131,11 @@ branches:
   only:
     # release tags
     - /^v\d+\.\d+\.\d+.*$/
+    # for pull requests:
     - master
+    # for bors
+    - staging
+    - trying
 
 
 notifications:
