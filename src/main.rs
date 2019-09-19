@@ -39,7 +39,7 @@ impl SimpleState for Example {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
         world.exec(|mut creator: UiCreator<'_>| {
-            creator.create("ui/own.ron", ());
+            creator.create("ui/menu.ron", ());
         });
     }
 
@@ -80,13 +80,6 @@ impl SimpleState for Example {
                 }
             });
         }
-        if self.random_text.is_none() {
-            world.exec(|finder: UiFinder| {
-                if let Some(entity) = finder.find("random_text") {
-                    self.random_text = Some(entity);
-                }
-            });
-        }
 
         let mut ui_text = world.write_storage::<UiText>();
         {
@@ -98,29 +91,29 @@ impl SimpleState for Example {
             }
         }
 
-        {
-            if let Some(random_text) = self.random_text.and_then(|entity| ui_text.get_mut(entity)) {
-                if let Ok(value) = random_text.text.parse::<i32>() {
-                    let mut new_value = value * 2;
-                    if new_value > 100_000 {
-                        new_value = 1;
-                    }
-                    random_text.text = new_value.to_string();
-                } else {
-                    random_text.text = String::from("1");
-                }
-            }
-        }
+        // {
+        //     if let Some(random_text) = self.random_text.and_then(|entity| ui_text.get_mut(entity)) {
+        //         if let Ok(value) = random_text.text.parse::<i32>() {
+        //             let mut new_value = value * 2;
+        //             if new_value > 100_000 {
+        //                 new_value = 1;
+        //             }
+        //             random_text.text = new_value.to_string();
+        //         } else {
+        //             random_text.text = String::from("1");
+        //         }
+        //     }
+        // }
 
         Trans::None
     }
 }
 
 fn main() -> amethyst::Result<()> {
-    menu()
-}
-
-fn other() -> amethyst::Result<()> {
+    //     menu()
+    // }
+    //
+    // fn other() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
 
     let app_root = application_root_dir()?;

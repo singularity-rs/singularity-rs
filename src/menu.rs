@@ -1,21 +1,16 @@
 use amethyst::{
+    assets::{AssetStorage, Handle, Loader},
+    core::transform::{Transform, TransformBundle},
+    ecs::prelude::{Component, DenseVecStorage},
     prelude::*,
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
         types::DefaultBackend,
-        RenderingBundle,
-        Camera,
-        ImageFormat,
-        SpriteRender,
-        SpriteSheet,
-        SpriteSheetFormat,
+        Camera, ImageFormat, RenderingBundle, SpriteRender, SpriteSheet, SpriteSheetFormat,
         Texture,
     },
     ui::UiCreator,
     utils::application_root_dir,
-    assets::{AssetStorage, Loader, Handle},
-    core::transform::{Transform, TransformBundle},
-    ecs::prelude::{Component, DenseVecStorage},
 };
 
 pub const ARENA_HEIGHT: f32 = 100.0;
@@ -125,7 +120,7 @@ pub fn menu() -> amethyst::Result<()> {
                         .with_clear([0.00196, 0.23726, 0.21765, 1.0]),
                 )
                 .with_plugin(RenderFlat2D::default()),
-            )?
+        )?
         .with_bundle(TransformBundle::new())?;
 
     let mut game = Application::new(assets_dir, MainMenu, game_data)?;
