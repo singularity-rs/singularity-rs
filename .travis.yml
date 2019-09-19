@@ -132,8 +132,8 @@ branches:
   only:
     # release tags
     - /^v\d+\.\d+\.\d+.*$/
-    # for pull requests:
-    # - master
+    # for coverage reports: (would be needed for PR, but we have bors)
+    - master
     # for bors
     - staging
     - trying
