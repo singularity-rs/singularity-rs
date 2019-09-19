@@ -53,8 +53,9 @@ script:
     # - cargo build --verbose
     # - cargo clippy -- -D warnings
     # - cargo test --verbose --features empty
-    - cargo clippy -- -D warnings
-    - cargo fmt   --all -- --check
+    # # activate sometime later:
+    # - cargo clippy -- -D warnings
+    # - cargo fmt   --all -- --check
     - cargo check --all --no-default-features --features empty
     - cargo build --all --no-default-features --features empty
     - cargo test  --all --no-default-features --features empty
