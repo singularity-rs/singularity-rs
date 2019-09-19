@@ -133,7 +133,7 @@ branches:
     # release tags
     - /^v\d+\.\d+\.\d+.*$/
     # for pull requests:
-    - master
+    # - master
     # for bors
     - staging
     - trying

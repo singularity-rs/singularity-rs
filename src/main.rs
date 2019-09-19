@@ -261,3 +261,10 @@ impl<'a> System<'a> for UiEventHandlerSystem {
 //         .expect("Fatal error");
 //     game.run();
 // }
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+}
