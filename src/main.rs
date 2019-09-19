@@ -23,6 +23,10 @@ use amethyst::{
 };
 use log::info;
 
+mod menu;
+
+use menu::menu;
+
 type MyPrefabData = BasicScenePrefab<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>;
 
 #[derive(Default)]
@@ -113,6 +117,10 @@ impl SimpleState for Example {
 }
 
 fn main() -> amethyst::Result<()> {
+    menu()
+}
+
+fn other() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
 
     let app_root = application_root_dir()?;
