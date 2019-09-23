@@ -5,7 +5,7 @@ authors = ["Felix Karg <fkarg10@gmail.com"]
 edition = "2018"
 
 [dependencies]
-amethyst = { git = "https://github.com/amethyst/amethyst", rev = "3f491c88fbaee405c59312b601631f6e227c4422" }
+amethyst = { git = "https://github.com/amethyst/amethyst", rev = "6cad3b88820f653ed18018ffc0dba005c6b345f9" }
 # amethyst = { path = "../amethyst" }
 log = { version = "0.4.6", features = ["serde"] }
 
@@ -16,3 +16,4 @@ default = ["vulkan"]
 empty = ["amethyst/empty"]
 metal = ["amethyst/metal"]
 vulkan = ["amethyst/vulkan"]
+nightly = ["amethyst/nightly"]
