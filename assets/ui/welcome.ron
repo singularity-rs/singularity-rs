@@ -1,0 +1,25 @@
+#![enable(implicit_some)]
+Container(
+    transform: (
+        id: "background",
+        anchor: Middle,
+        stretch: XY( x_margin: 0., y_margin: 0., keep_aspect_ratio: false),
+        width: 20.,
+        height: 20.,
+    ),
+
+    children: [
+
+        Image(
+            transform: (
+                id: "background",
+                // y: 540.,            // <- comment this
+                width: 1920.,
+                height: 1080.,
+                tab_order: 1,
+                anchor: Middle,
+            ),
+            image: Texture(File("img/Splash.jpeg", ("IMAGE", ()))),
+        ),
+    ],
+)

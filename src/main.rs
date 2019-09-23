@@ -1,5 +1,5 @@
 use amethyst::{
-    assets::{PrefabLoaderSystemDesc, Processor},
+    assets::{HotReloadBundle, PrefabLoaderSystemDesc, Processor},
     audio::Source,
     core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle, SystemDesc, Time},
     derive::SystemDesc,
@@ -110,10 +110,10 @@ impl SimpleState for Example {
 }
 
 fn main() -> amethyst::Result<()> {
-    //     menu()
-    // }
-    //
-    // fn other() -> amethyst::Result<()> {
+    menu()
+}
+
+fn other() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
 
     let app_root = application_root_dir()?;
@@ -125,6 +125,7 @@ fn main() -> amethyst::Result<()> {
         .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
         .with_bundle(TransformBundle::new())?
         .with_bundle(UiBundle::<StringBindings>::new())?
+        .with_bundle(HotReloadBundle::default())?
         .with(Processor::<Source>::new(), "source_processor", &[])
         .with_system_desc(UiEventHandlerSystemDesc::default(), "ui_event_handler", &[])
         .with_bundle(FpsCounterBundle::default())?

@@ -8,3 +8,9 @@ delete_merged_branches = false
 # Uncomment this to use a five hour timeout.
 # The default is one hour.
 timeout_sec = 18000
+
+
+[committer]
+name = "Felix Karg"
+email = "f.karg10@gmail.com"
+
