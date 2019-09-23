@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build_test_linux:
+  test:
     docker:
       - image: rust:1
     steps:
@@ -32,3 +32,8 @@ jobs:
           name: Run all tests
           command: cargo test --all --no-default-features --features empty
 
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - test
