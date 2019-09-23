@@ -1,7 +1,8 @@
 use amethyst::{
-    assets::{AssetStorage, Handle, Loader},
+    assets::{AssetStorage, Handle, HotReloadBundle, Loader},
     core::transform::{Transform, TransformBundle},
     ecs::prelude::{Component, DenseVecStorage},
+    input::{is_close_requested, is_key_down, InputBundle, StringBindings},
     prelude::*,
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
@@ -9,77 +10,50 @@ use amethyst::{
         Camera, ImageFormat, RenderingBundle, SpriteRender, SpriteSheet, SpriteSheetFormat,
         Texture,
     },
-    ui::UiCreator,
+    ui::{RenderUi, UiBundle, UiCreator, UiEvent, UiFinder, UiText},
     utils::application_root_dir,
+    winit::VirtualKeyCode,
 };
 
-pub const ARENA_HEIGHT: f32 = 100.0;
-pub const ARENA_WIDTH: f32 = 100.0;
+use log::info;
 
-pub const PADDLE_HEIGHT: f32 = 16.0;
-pub const PADDLE_WIDTH: f32 = 4.0;
+pub struct WelcomeScreen;
 
-fn initialise_camera(world: &mut World) {
-    // Setup camera in a way that our screen covers whole arena and (0, 0) is in the bottom left.
-    let mut transform = Transform::default();
-    transform.set_translation_xyz(ARENA_WIDTH * 0.5, ARENA_HEIGHT * 0.5, 1.0);
+impl SimpleState for WelcomeScreen {
+    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        let world = data.world;
 
-    world
-        .create_entity()
-        .with(Camera::standard_2d(ARENA_WIDTH, ARENA_HEIGHT))
-        .with(transform)
-        .build();
-}
+        world.exec(|mut creator: UiCreator<'_>| {
+            creator.create("ui/welcome.ron", ());
+        });
+    }
 
-/// Initialises one paddle on the left, and one paddle on the right.
-fn initialise_paddles(world: &mut World) {
-    let mut left_transform = Transform::default();
-    let mut right_transform = Transform::default();
-
-    // Correctly position the paddles.
-    let y = ARENA_HEIGHT / 2.0;
-    left_transform.set_translation_xyz(PADDLE_WIDTH * 0.5, y, 0.0);
-    right_transform.set_translation_xyz(ARENA_WIDTH - PADDLE_WIDTH * 0.5, y, 0.0);
-
-    // Create a left plank entity.
-    world
-        .create_entity()
-        .with(Paddle::new(Side::Left))
-        .with(left_transform)
-        .build();
-
-    // Create right plank entity.
-    world
-        .create_entity()
-        .with(Paddle::new(Side::Right))
-        .with(right_transform)
-        .build();
-}
-
-#[derive(PartialEq, Eq)]
-pub enum Side {
-    Left,
-    Right,
-}
-
-pub struct Paddle {
-    pub side: Side,
-    pub width: f32,
-    pub height: f32,
-}
-
-impl Paddle {
-    fn new(side: Side) -> Paddle {
-        Paddle {
-            side,
-            width: PADDLE_WIDTH,
-            height: PADDLE_HEIGHT,
+    fn handle_event(
+        &mut self,
+        _: StateData<'_, GameData<'_, '_>>,
+        event: StateEvent,
+    ) -> SimpleTrans {
+        match &event {
+            StateEvent::Window(event) => {
+                if is_close_requested(&event) || is_key_down(&event, VirtualKeyCode::Escape) {
+                    Trans::Quit
+                } else {
+                    Trans::None
+                }
+            }
+            StateEvent::Ui(ui_event) => {
+                info!(
+                    "[HANDLE_EVENT] You just interacted with a ui element: {:?}",
+                    ui_event
+                );
+                Trans::None
+            }
+            StateEvent::Input(input) => {
+                info!("Input Event detected: {:?}.", input);
+                Trans::None
+            }
         }
     }
-}
-
-impl Component for Paddle {
-    type Storage = DenseVecStorage<Self>;
 }
 
 pub struct MainMenu;
@@ -88,12 +62,8 @@ impl SimpleState for MainMenu {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        world.register::<Paddle>();
-        initialise_paddles(world);
-        initialise_camera(world);
-
         world.exec(|mut creator: UiCreator<'_>| {
-            creator.create("ui/own.ron", ());
+            creator.create("ui/menu.ron", ());
         });
     }
 
@@ -113,17 +83,24 @@ pub fn menu() -> amethyst::Result<()> {
     let assets_dir = app_root.join("assets");
 
     let game_data = GameDataBuilder::default()
+        .with_bundle(TransformBundle::new())?
+        .with_bundle(HotReloadBundle::default())?
+        .with_bundle(UiBundle::<StringBindings>::new())?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)
                         .with_clear([0.00196, 0.23726, 0.21765, 1.0]),
                 )
-                .with_plugin(RenderFlat2D::default()),
-        )?
-        .with_bundle(TransformBundle::new())?;
+                // .with_plugin(RenderFlat2D::default())
+                .with_plugin(RenderUi::default()),
+            // RenderUi failed with
+            // thread 'main' panicked at 'Tried to fetch a resource of type
+            // "specs::storage::MaskedStorage<amethyst_ui::image::UiImage>",
+            // but the resource does not exist.
+        )?;
 
-    let mut game = Application::new(assets_dir, MainMenu, game_data)?;
+    let mut game = Application::new(assets_dir, WelcomeScreen, game_data)?;
     game.run();
 
     Ok(())
