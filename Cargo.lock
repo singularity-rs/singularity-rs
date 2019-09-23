@@ -1406,7 +1406,7 @@ name = "glyph_brush"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "glyph_brush_layout 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glyph_brush_layout 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "ordered-float 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-hash 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1416,10 +1416,10 @@ dependencies = [
 
 [[package]]
 name = "glyph_brush_layout"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "rusttype 0.7.9 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rusttype 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "xi-unicode 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -4487,7 +4487,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum glsl-layout-derive 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "def9469f08de9930cae4c4e7d88b059cce0765a0ffdf6108ecc96568e801516d"
 "checksum glyph_brush 0.5.4 (registry+https://github.com/rust-lang/crates.io-index)" = "131d7d6f3e7ea0988a707da50ae876f8a9c4c7eb397ccfac9fe9309d4ebe8726"
 "checksum glyph_brush 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ba96013fbce9c4145b3f26623e66e48656023aec14e47270cf646dcb80d742fa"
-"checksum glyph_brush_layout 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)" = "f417496b6038edc9d5e068531d74ef56769f9ae592840d819c99cafc1aa25f72"
+"checksum glyph_brush_layout 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)" = "62b6d460a62dc8a2d3402689b02824ca03d40ec6f1673b9d2016d1f30ce5cb62"
 "checksum h2 0.1.26 (registry+https://github.com/rust-lang/crates.io-index)" = "a5b34c246847f938a410a03c5458c7fee2274436675e76d8b903c08efc29c462"
 "checksum hashbrown 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "2bcea5b597dd98e6d1f1ec171744cc5dee1a30d1c23c5b98e3cf9d4fbdf8a526"
 "checksum heck 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "20564e78d53d2bb135c343b3f47714a56af2061f1c928fdb541dc7b9fdd94205"
