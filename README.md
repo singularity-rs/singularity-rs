@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.com/singularity-rs/singularity-rs.svg?branch=master)](https://travis-ci.com/singularity-rs/singularity-rs)
 [![codecov](https://codecov.io/gh/singularity-rs/singularity-rs/branch/master/graph/badge.svg)](https://codecov.io/gh/singularity-rs/singularity-rs)
 [![Docs](https://img.shields.io/badge/docs-here-brightgreen)](https://singularity-rs.github.io/singularity-rs/)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=singularity-rs/singularity-rs)](https://dependabot.com)
 [![Bors enabled](https://bors.tech/images/badge_small.svg)](https://app.bors.tech/repositories/20537)
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
 <!-- [![GitHub tag](https://img.shields.io/github/v/tag/singularity-rs/singularity-rs.svg)](https://github.com/singularity-rs/singularity-rs/tags/) -->
