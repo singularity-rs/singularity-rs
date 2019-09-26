@@ -9,19 +9,27 @@
 
 This will be a reimplementation of the game Singularity ( https://github.com/SoPra18-07/Singularity ) in Rust using [amethyst](https://amethyst.rs/). Also inspired from [Achikaps](https://play.google.com/store/apps/details?id=yio.tro.achikaps).
 
-Stage: in planning.
+Stage: implementing parts / planning.
+
+
+## How to run
+
+To run the game, simply use `cargo run`. A recent rust installation is recommended.
+
+
+On macOS: `cargo run --no-default-features --features "metal"`.
 
 
 ## Modules that are still needed (or things I need to think through)
 (and are somewhat on their own, so they might result in their own crates if nothing applicable can be found)
 
 <!-- - [ ] Units/Sprites (including health-system, spawn till death) -->
-- [ ] Screen Manager -> not necessary, use amethyst state machine
-- [ ] Input Manager -> not necessary, use amethyst event channels
-- [ ] Sound Manager -> there is something in amethyst
+- [x] Screen Manager -> use amethyst state machine
+- [x] Input Manager -> amethyst has one
+- [x] Sound Manager -> amethyst has one
 - [ ] Physics / Game mechanics -> keep looking
 - [ ] Map -> might need custom implementation
-- [ ] UI -> amethyst has an awesome example for this. Adjust as needed.
+- [x] UI -> amethyst has considerable implementations already. There is little documentation though ...
 - [ ] Pathfinding (`graph-paths`, `flow-paths`, `heatmap`, `A*`, ...) -> probably custom implementation
 - [ ] Prioritized Task-based work distribution (DistributionManager) -> absolutely custom implementation
 - [ ] Platforms (with all their mechanics, PlatformActions) (will probably result in a combination of entities and systems and event channels) -> custom implementation
@@ -38,16 +46,10 @@ Take a look at the [issue tracker](https://github.com/singularity-rs/singularity
 
 
 
-## How to run
-
-To run the game, simply use `cargo run`.
-
-
-On macOS: `cargo run --no-default-features --features "metal"`.
-
-
 ## People to thank
 
-I have to thank Yvan Satyawan [yvan674](https://github.com/yvan674) for providing the Logo (Splash.jpeg and Splash2.jpg).
+The awesome Logo was made by Yvan Satyawan [yvan674](https://github.com/yvan674) (Splash.jpeg and Splash2.jpg).
 
+## Other
 
+Network can be found [here](https://github.com/singularity-rs/singularity-rs/network).
