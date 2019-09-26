@@ -47,7 +47,8 @@ Container(
             ),
             image: Texture(File("texture/logo_transparent.png", ("IMAGE", ()))),
         ),
-         // Partial Texture logo
+
+        // Partial Texture logo
         Image(
             transform: (
                 id: "Partial Texture Logo",
@@ -59,7 +60,12 @@ Container(
                 anchor: TopRight,
                 mouse_reactive: true,
             ),
-            image: PartialTexture(File("texture/test_texture.png", ("IMAGE", ())),0.34,0.0,1.0,0.333),
+            image: PartialTexture(
+                tex: File("texture/test_texture.png", ("IMAGE", ())),
+                left : 0.34,
+                right : 1.0,
+                bottom: 0.333,
+                top: 0.0),
         ),
         //9-Slice
         Image(
@@ -334,35 +340,5 @@ Container(
             )
         ),
         // ------ Text Align Stop -------
-
-        Container(
-            transform: (
-                id: "right_bar",
-                width: 500.,
-                height: 1024.,
-                anchor: BottomRight,
-            ),
-            background: SolidColor(0., 0., 0., 1.0),
-            children: [
-                Label(
-                    transform: (
-                        id: "multiline",
-                        x: 0.,
-                        y: 0.,
-                        z: 2.,
-                        width: 500.,
-                        height: 1024.,
-                        anchor: Middle,
-                    ),
-                    text: (
-                        text: "Multiline\nNested in container\nTEST!\nlorem\nipsum\ndolor\nlines\n123\nlines\nlines\nlines\nlines\nlines\nlines\nlines\nlines\nlines\nlines\nlast line",
-                        font_size: 20.,
-                        color: (0.2, 0.2, 1.0, 1.0),
-                        line_mode: Wrap,
-                        align: TopLeft,
-                    )
-                ),
-            ]
-        ),
     ],
 )
