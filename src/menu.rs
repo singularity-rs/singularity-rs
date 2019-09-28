@@ -2,33 +2,30 @@ use amethyst::{
     assets::{HotReloadBundle, Processor},
     audio::Source,
     core::{
-        transform::{TransformBundle, ParentHierarchy},
+        transform::{ParentHierarchy, TransformBundle},
         SystemDesc,
     },
     derive::SystemDesc,
     ecs::{
-        prelude::{Entity, System, SystemData, World, WorldExt, Write,},
         error::WrongGeneration,
+        prelude::{Entity, System, SystemData, World, WorldExt, Write},
     },
     input::{is_close_requested, is_key_down, is_mouse_button_down, InputBundle, StringBindings},
     prelude::*,
     renderer::{
         plugins::RenderToWindow,
         // rendy::mesh::{Normal, Position, TexCoord},
-        types::DefaultBackend, RenderingBundle,
+        types::DefaultBackend,
+        RenderingBundle,
     },
     shrev::{EventChannel, ReaderId},
-    ui::{RenderUi, UiBundle, UiCreator, UiEvent, UiFinder, UiEventType},
-    utils::{
-        application_root_dir,
-        // scene::BasicScenePrefab,
-    },
-    winit::{VirtualKeyCode, MouseButton},
+    ui::{RenderUi, UiBundle, UiCreator, UiEvent, UiEventType, UiFinder},
+    utils::application_root_dir,
+    winit::{MouseButton, VirtualKeyCode},
 };
 
-use std::iter;
 use log::info;
-
+use std::iter;
 
 // trait Screen {}
 //
@@ -38,9 +35,6 @@ use log::info;
 // }
 
 // type MyPrefabData = BasicScenePrefab<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>;
-
-
-
 
 #[derive(Default, Debug)]
 struct WelcomeScreen {
@@ -53,9 +47,8 @@ impl SimpleState for WelcomeScreen {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        self.ui_handle = Some(world.exec(|mut creator: UiCreator<'_>| {
-            creator.create("ui/welcome.ron", ())
-        }));
+        self.ui_handle =
+            Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/welcome.ron", ())));
     }
 
     fn handle_event(
@@ -83,20 +76,17 @@ impl SimpleState for WelcomeScreen {
                 );
                 Trans::None
             }
-            _ => Trans::None
+            _ => Trans::None,
         }
     }
 
-
     fn on_stop(&mut self, data: StateData<GameData>) {
         if let Some(handler) = self.ui_handle {
-            delete_hierarchy(handler, data.world)
-                .expect("Failed to remove WelcomeScreen");
+            delete_hierarchy(handler, data.world).expect("Failed to remove WelcomeScreen");
         }
         self.ui_handle = None;
     }
 }
-
 
 #[derive(Default, Debug)]
 struct MainMenu {
@@ -113,27 +103,27 @@ impl SimpleState for MainMenu {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        self.ui_root = Some(world.exec(|mut creator: UiCreator<'_>| {
-            creator.create("ui/menu.ron", ())
-        }));
+        self.ui_root =
+            Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/menu.ron", ())));
     }
 
     fn update(&mut self, state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         let StateData { world, .. } = state_data;
 
-        if self.button_start.is_none() || self.button_load.is_none() || self.button_options.is_none() || self.button_credits.is_none() {
+        if self.button_start.is_none()
+            || self.button_load.is_none()
+            || self.button_options.is_none()
+            || self.button_credits.is_none()
+        {
             world.exec(|ui_finder: UiFinder<'_>| {
                 self.button_start = ui_finder.find("start");
                 self.button_load = ui_finder.find("load");
                 self.button_options = ui_finder.find("options");
                 self.button_credits = ui_finder.find("credits");
-
             });
         }
 
-
         Trans::None
-
     }
 
     fn handle_event(
@@ -160,14 +150,13 @@ impl SimpleState for MainMenu {
                 );
                 Trans::None
             }
-            _ => Trans::None
+            _ => Trans::None,
         }
     }
 
     fn on_stop(&mut self, data: StateData<GameData>) {
         if let Some(entity) = self.ui_root {
-            delete_hierarchy(entity, data.world)
-                .expect("Failed to remove MainMenu");
+            delete_hierarchy(entity, data.world).expect("Failed to remove MainMenu");
         }
         self.ui_root = None;
         self.button_start = None;
@@ -176,7 +165,6 @@ impl SimpleState for MainMenu {
         self.button_credits = None;
     }
 }
-
 
 /// delete the specified root entity and all of its descendents as specified
 /// by the Parent component and maintained by the ParentHierarchy resource
@@ -254,7 +242,6 @@ impl<'a> System<'a> for UiEventHandlerSystem {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
