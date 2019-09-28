@@ -13,8 +13,9 @@ log = { version = "0.4.6", features = ["serde"] }
 
 
 [features]
-default = ["vulkan"]
+default = ["vulkan", "no-slow-safety-checks"]
 empty = ["amethyst/empty"]
 metal = ["amethyst/metal"]
 vulkan = ["amethyst/vulkan"]
 nightly = ["amethyst/nightly"]
+no-slow-safety-checks = ["amethyst/no-slow-safety-checks"]
