@@ -165,11 +165,15 @@ impl SimpleState for MainMenu {
     }
 
     fn on_stop(&mut self, data: StateData<GameData>) {
-        if let Some(handler) = self.ui_root {
-            delete_hierarchy(handler, data.world)
+        if let Some(entity) = self.ui_root {
+            delete_hierarchy(entity, data.world)
                 .expect("Failed to remove MainMenu");
         }
         self.ui_root = None;
+        self.button_start = None;
+        self.button_load = None;
+        self.button_options = None;
+        self.button_credits = None;
     }
 }
 
