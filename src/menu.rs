@@ -100,8 +100,6 @@ impl SimpleState for MainMenu {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        info!("Should load MainMenu?");
-
         self.ui_handle = Some(world.exec(|mut creator: UiCreator<'_>| {
             creator.create("ui/menu.ron", ())
         }));
@@ -161,7 +159,6 @@ fn delete_hierarchy(root: Entity, world: &mut World) -> Result<(), WrongGenerati
     world.delete_entities(&entities)
 }
 
-
 pub fn menu() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
 
@@ -179,7 +176,9 @@ pub fn menu() -> amethyst::Result<()> {
             RenderingBundle::<DefaultBackend>::new()
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)
-                        .with_clear([0.00196, 0.23726, 0.21765, 1.0]),
+                        // .with_clear([0.00196, 0.23726, 0.21765, 1.0]),
+                        // .with_clear([0.05, 0.05, 0.05, 1.0]),
+                        .with_clear([0.005, 0.005, 0.005, 1.0]),
                 )
                 .with_plugin(RenderUi::default()),
             // RenderUi failed with
