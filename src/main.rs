@@ -1,7 +1,12 @@
 use amethyst::{
-    assets::{HotReloadBundle, PrefabLoaderSystemDesc, Processor},
+    assets::{HotReloadBundle, Processor, PrefabLoaderSystemDesc},
     audio::Source,
-    core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle, SystemDesc, Time},
+    core::{
+        frame_limiter::FrameRateLimitStrategy,
+        transform::TransformBundle,
+        SystemDesc,
+        Time,
+    },
     derive::SystemDesc,
     ecs::prelude::{Entity, System, SystemData, World, WorldExt, Write},
     input::{is_close_requested, is_key_down, InputBundle, StringBindings},
