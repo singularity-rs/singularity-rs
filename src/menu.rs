@@ -131,7 +131,7 @@ impl SimpleState for MainMenu {
         _: StateData<'_, GameData<'_, '_>>,
         event: StateEvent,
     ) -> SimpleTrans {
-        match &event {
+        match event {
             StateEvent::Window(event) => {
                 if is_close_requested(&event) || is_key_down(&event, VirtualKeyCode::Escape) {
                     info!("Switching back!");
@@ -144,12 +144,12 @@ impl SimpleState for MainMenu {
                 event_type: UiEventType::Click,
                 target,
             }) => {
-                info!(
-                    "[HANDLE_EVENT] You just interacted with a ui element: {:?}",
-                    target
-                );
-                Trans::None
-            }
+                if Some(target) == self.button_credits {
+                    Trans::Switch(Box::new(CreditsScreen::default()))
+                } else {
+                    Trans::None
+                }
+            },
             _ => Trans::None,
         }
     }
@@ -216,6 +216,49 @@ pub fn menu() -> amethyst::Result<()> {
 
     Ok(())
 }
+
+
+#[derive(Debug, Default)]
+struct CreditsScreen {
+    ui_handle: Option<Entity>,
+}
+
+impl SimpleState for CreditsScreen {
+    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        let world = data.world;
+
+        self.ui_handle =
+            Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/credits.ron", ())));
+    }
+
+    fn handle_event(
+        &mut self,
+        _: StateData<'_, GameData<'_, '_>>,
+        event: StateEvent,
+    ) -> SimpleTrans {
+        match &event {
+            StateEvent::Window(event) => {
+                if is_close_requested(&event) || is_key_down(&event, VirtualKeyCode::Escape) || is_mouse_button_down(&event, MouseButton::Left) {
+                    Trans::Switch(Box::new(MainMenu::default()))
+                } else {
+                    Trans::None
+                }
+            }
+            _ => Trans::None,
+        }
+    }
+
+    fn on_stop(&mut self, data: StateData<GameData>) {
+        if let Some(handler) = self.ui_handle {
+            delete_hierarchy(handler, data.world).expect("Failed to remove CreditScreen");
+        }
+        self.ui_handle = None;
+    }
+}
+
+
+
+
 
 /// This shows how to handle UI events.
 #[derive(SystemDesc)]
