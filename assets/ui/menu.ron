@@ -41,8 +41,6 @@ Container(
                         normal_image: SolidColor(0., 0., 0., 1.),
                         hover_image: SolidColor(0.1, 0.1, 0.1, 1.),
                         press_image: SolidColor(0.15, 0.15, 0.15, 1.),
-                        // hover_sound: File("audio/boop.ogg", ("OGG", ())),
-                        // press_sound: File("audio/confirm.ogg", ("OGG", ())),
                     )
                 ),
             ]
@@ -75,13 +73,9 @@ Container(
                         font: File("font/square.ttf", ("TTF", ())),
                         font_size: 75.,
                         normal_text_color: (1.0, 0.65, 0., 1.0), // ffa500
-                        // hover_text_color: (1.0, 0.65, 0., 1.0),
-                        // press_text_color: (1.0, 0.65, 0., 1.0),
                         normal_image: SolidColor(0., 0., 0., 1.),
                         hover_image: SolidColor(0.1, 0.1, 0.1, 1.),
                         press_image: SolidColor(0.15, 0.15, 0.15, 1.),
-                        // hover_sound: File("audio/boop.ogg", ("OGG", ())),
-                        // press_sound: File("audio/confirm.ogg", ("OGG", ())),
                     )
                 ),
             ]
@@ -114,13 +108,9 @@ Container(
                         font: File("font/square.ttf", ("TTF", ())),
                         font_size: 75.,
                         normal_text_color: (1.0, 0.65, 0., 1.0), // ffa500
-                        // hover_text_color: (1.0, 0.65, 0., 1.0),
-                        // press_text_color: (1.0, 0.65, 0., 1.0),
                         normal_image: SolidColor(0., 0., 0., 1.),
                         hover_image: SolidColor(0.1, 0.1, 0.1, 1.),
                         press_image: SolidColor(0.15, 0.15, 0.15, 1.),
-                        // hover_sound: File("audio/boop.ogg", ("OGG", ())),
-                        // press_sound: File("audio/confirm.ogg", ("OGG", ())),
                     )
                 ),
             ]
@@ -153,13 +143,9 @@ Container(
                         font: File("font/square.ttf", ("TTF", ())),
                         font_size: 75.,
                         normal_text_color: (1.0, 0.65, 0., 1.0), // ffa500
-                        // hover_text_color: (1.0, 0.65, 0., 1.0),
-                        // press_text_color: (1.0, 0.65, 0., 1.0),
                         normal_image: SolidColor(0., 0., 0., 1.),
                         hover_image: SolidColor(0.1, 0.1, 0.1, 1.),
                         press_image: SolidColor(0.15, 0.15, 0.15, 1.),
-                        // hover_sound: File("audio/boop.ogg", ("OGG", ())),
-                        // press_sound: File("audio/confirm.ogg", ("OGG", ())),
                     )
                 ),
             ]
