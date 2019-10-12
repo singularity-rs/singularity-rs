@@ -14,7 +14,7 @@ Stage: implementing parts / planning.
 
 ## How to run
 
-To run the game, simply use `cargo run`. A recent rust installation is recommended.
+To run the game, simply use `cargo run`. A recent rust installation is recommended. Make sure to have the [amethyst dependencies](#amethyst-dependencies) installed.
 
 
 On macOS: `cargo run --no-default-features --features "metal"`.
@@ -50,6 +50,44 @@ Take a look at the [issue tracker](https://github.com/singularity-rs/singularity
 
 The awesome Logo was made by Yvan Satyawan [yvan674](https://github.com/yvan674) (Splash.jpeg and Splash2.jpg).
 
+
+## Amethyst Dependencies
+
+If you are compiling on Linux, make sure to install the dependencies below.
+
+### Arch Linux
+
+```
+$ pacman -Sy grep gcc pkgconfig openssl alsa-lib cmake make python3 freetype2 awk libxcb
+```
+
+### Debian/Ubuntu
+
+```
+# apt install gcc pkg-config openssl libasound2-dev cmake build-essential python3 libfreetype6-dev libexpat1-dev libxcb-composite0-dev libssl-dev libx11-dev
+```
+
+### Fedora
+
+```
+# dnf install pkgconfig gcc openssl-devel alsa-lib-devel cmake make gcc-c++ freetype-devel expat-devel libxcb-devel libX11-devel
+```
+
+### openSUSE
+
+```
+# zypper install gcc pkg-config libopenssl-devel alsa-devel cmake gcc-c++ python3 freetype2-devel libexpat-devel libxcb-devel
+```
+
+### Other
+
+See your distribution-specific installation process for the equivalent dependencies.
+
+**Please note that you need to have a functional graphics driver installed. If you get a panic about the renderer unable to create the context when trying to run an example, a faulty driver installation could be the issue.**
+
+
 ## Other
 
 Network can be found [here](https://github.com/singularity-rs/singularity-rs/network).
+
+
