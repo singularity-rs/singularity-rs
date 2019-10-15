@@ -1012,7 +1012,7 @@ dependencies = [
  "failure_derive 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "fluent-locale 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "fluent-syntax 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "intl_pluralrules 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "intl_pluralrules 4.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rental 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "smallvec 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "unic-langid 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1344,7 +1344,7 @@ dependencies = [
 
 [[package]]
 name = "intl_pluralrules"
-version = "4.0.0"
+version = "4.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "matches 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -3620,7 +3620,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum hound 3.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8a164bb2ceaeff4f42542bdb847c41517c78a60f5649671b2a07312b6e117549"
 "checksum image 0.21.3 (registry+https://github.com/rust-lang/crates.io-index)" = "35371e467cd7b0b3d1d6013d619203658467df12d61b0ca43cd67b743b1965eb"
 "checksum inflate 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)" = "1cdb29978cc5797bd8dcc8e5bf7de604891df2a8dc576973d71a281e916db2ff"
-"checksum intl_pluralrules 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6be21c467bf1cecc9094cb899718581e0f51240407da5626e0efcc2f23e3500f"
+"checksum intl_pluralrules 4.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "914dfd30afec12b332108e91a892988be4a91ce907b29c59c01348b73f06edce"
 "checksum inventory 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)" = "f4cece20baea71d9f3435e7bbe9adf4765f091c5fe404975f844006964a71299"
 "checksum inventory-impl 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)" = "c2869bf972e998977b1cb87e60df70341d48e48dca0823f534feb91ea44adaf9"
 "checksum iovec 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)" = "b2b3ea6ff95e175473f8ffe6a7eb7c00d054240321b84c57051175fe3c1e075e"
