@@ -1,6 +1,6 @@
 [package]
 name = "singularity-rs"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Felix Karg <fkarg10@gmail.com"]
 edition = "2018"
 
@@ -8,6 +8,7 @@ edition = "2018"
 amethyst = "0.13.2"
 # amethyst = { path = "../amethyst" }
 log = { version = "0.4.8", features = ["serde"] }
+derivative = "1.0.3"
 
 
 
