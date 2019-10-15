@@ -5,7 +5,7 @@ use amethyst::{
     input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
-        plugins::{RenderFlat2D, RenderToWindow},
+        plugins::{RenderToWindow, RenderFlat2D},
         types::DefaultBackend,
         RenderingBundle,
     },
@@ -17,13 +17,12 @@ use amethyst::{
 mod credits;
 mod events;
 mod game;
-mod layers;
 mod menu;
 mod pause;
-mod platform;
-mod resources;
 mod util;
 mod welcome;
+mod platform;
+mod pong;
 
 /// Quick overview what you can do when running this example:
 ///
@@ -86,8 +85,7 @@ pub fn main() -> amethyst::Result<()> {
                 // Without this, all of our beautiful UI would not get drawn.
                 // It will work, but we won't see a thing.
                 .with_plugin(RenderUi::default())
-                // Required for rendering SpriteRender instances
-                .with_plugin(RenderFlat2D::default()),
+                .with_plugin(RenderFlat2D::default())
         )?;
 
     // creating the Application with the assets_dir, the first Screen, and the game_data with it's
@@ -110,3 +108,4 @@ mod tests {
         assert_eq!(2 + 2, 4);
     }
 }
+
