@@ -1,20 +1,74 @@
 use crate::pause::PauseMenuState;
+use crate::platform::*;
+use crate::resources::*;
 use crate::util::delete_hierarchy;
+use crate::util::load_sprite_sheet;
 use amethyst::{
     audio::output::init_output,
-    core::Time,
+    core::{transform::Transform, Time},
     ecs::prelude::{Entity, WorldExt},
     input::{is_close_requested, is_key_down},
     prelude::*,
+    renderer::{
+        palette::Srgba, resources::Tint, Camera, SpriteRender, SpriteSheet, Texture, Transparent,
+    },
     ui::{UiCreator, UiFinder, UiText},
     utils::fps_counter::FpsCounter,
     winit::VirtualKeyCode,
 };
 use log::info;
 
-/// Main 'Game' state. Actually, it is mostly similar to the ui/main.rs content-wise.
-/// The main differences include the added 'paused' field in the state, which is toggled when
-/// 'pausing'.
+pub const ARENA_HEIGHT: f32 = 900.0;
+pub const ARENA_WIDTH: f32 = 1600.0;
+
+fn initialise_camera(world: &mut World) {
+    // this gets the current screen dimensions:
+    // let dim = world.read_resource::<ScreenDimensions>();
+
+    // Setup camera in a way that our screen covers whole arena and (0, 0) is in the bottom left.
+    let mut transform = Transform::default();
+    transform.set_translation_xyz(ARENA_WIDTH * 0.5, ARENA_HEIGHT * 0.5, 10.0);
+    // transform.set_translation_xyz(0., 0., 10.);
+
+    world
+        .create_entity()
+        .with(Camera::standard_2d(ARENA_WIDTH, ARENA_HEIGHT))
+        .with(transform)
+        .build();
+}
+
+fn initialize_platforms(world: &mut World, sprite_render: SpriteRender) {
+    // let sprite_sheet = load_sprite_sheet(world, "pong_spritesheet");
+
+    world.register::<Platform>();
+
+    create_platform(
+        Platform::default(),
+        world,
+        sprite_render.clone(),
+        200.,
+        300.,
+    );
+    create_platform(
+        Platform::default(),
+        world,
+        sprite_render.clone(),
+        800.,
+        600.,
+    );
+}
+
+fn initialize_resources(world: &mut World, sprite_render: SpriteRender) {
+    world.register::<Resource>();
+
+    create_resource(
+        Resource::new(ResourceType::Perl),
+        world,
+        sprite_render.clone(),
+        200.,
+        300.,
+    );
+}
 
 #[derive(Default)]
 pub struct Game {
@@ -26,13 +80,28 @@ pub struct Game {
 
 impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let StateData { mut world, .. } = data;
+        // let StateData { mut world, .. } = data;
+        let mut world = data.world;
+
+        let sprite_sheet = load_sprite_sheet(world, "ball");
+
+        // Assign the sprite for the platform(s)
+        let sprite_render = SpriteRender {
+            sprite_sheet: sprite_sheet.clone(),
+            sprite_number: 0, // platform is the first/only sprite in the sprite_sheet
+        };
+
+        // world.insert(sprite_render.clone());
+
+        initialise_camera(&mut world);
+        initialize_platforms(&mut world, sprite_render.clone());
+        initialize_resources(&mut world, sprite_render);
 
         // needed for registering audio output.
         init_output(&mut world);
 
-        self.ui_root =
-            Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/game.ron", ())));
+        // self.ui_root =
+        //     Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/game.ron", ())));
     }
 
     fn on_pause(&mut self, _data: StateData<'_, GameData<'_, '_>>) {
