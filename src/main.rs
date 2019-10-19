@@ -24,6 +24,8 @@ mod platform;
 mod resources;
 mod util;
 mod welcome;
+mod roads;
+mod general_unit;
 
 /// Quick overview what you can do when running this example:
 ///

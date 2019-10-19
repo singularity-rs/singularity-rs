@@ -1,6 +1,7 @@
 use crate::pause::PauseMenuState;
 use crate::platform::*;
 use crate::resources::*;
+use crate::general_unit::*;
 use crate::util::delete_hierarchy;
 use crate::util::load_sprite_sheet;
 use amethyst::{
@@ -71,6 +72,20 @@ fn initialize_resources(world: &mut World, sprite_render: SpriteRender) {
     );
 }
 
+fn initialize_gunits(world: &mut World, sprite_render: SpriteRender) {
+
+    world.register::<GUnitAttributes>();
+
+    create_gunit(
+        GUnitAttributes::default(),
+        world,
+        sprite_render.clone(),
+        810.,
+        605.,
+    );
+}
+
+
 #[derive(Default)]
 pub struct Game {
     paused: bool,
@@ -96,7 +111,8 @@ impl SimpleState for Game {
 
         initialise_camera(&mut world);
         initialize_platforms(&mut world, sprite_render.clone());
-        initialize_resources(&mut world, sprite_render);
+        initialize_resources(&mut world, sprite_render.clone());
+        initialize_gunits(&mut world, sprite_render.clone());
 
         // needed for registering audio output.
         init_output(&mut world);
