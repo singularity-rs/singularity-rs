@@ -40,17 +40,17 @@ fn initialise_camera(world: &mut World) {
 fn initialize_platforms(world: &mut World, sprite_render: SpriteRender) {
     // let sprite_sheet = load_sprite_sheet(world, "pong_spritesheet");
 
-    world.register::<Platform>();
+    world.register::<PlatformAttributes>();
 
     create_platform(
-        Platform::default(),
+        PlatformAttributes::default(),
         world,
         sprite_render.clone(),
         200.,
         300.,
     );
     create_platform(
-        Platform::default(),
+        PlatformAttributes::default(),
         world,
         sprite_render.clone(),
         800.,
@@ -59,10 +59,11 @@ fn initialize_platforms(world: &mut World, sprite_render: SpriteRender) {
 }
 
 fn initialize_resources(world: &mut World, sprite_render: SpriteRender) {
-    world.register::<Resource>();
+
+    world.register::<ResourceAttributes>();
 
     create_resource(
-        Resource::new(ResourceType::Perl),
+        ResourceAttributes::new(ResourceType::Perl),
         world,
         sprite_render.clone(),
         200.,

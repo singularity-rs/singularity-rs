@@ -12,16 +12,16 @@ pub enum ResourceType {
 }
 
 #[derive(Debug)]
-pub struct Resource(ResourceType);
+pub struct ResourceAttributes(ResourceType);
 
-impl Resource {
+impl ResourceAttributes {
     pub fn new(t: ResourceType) -> Self {
-        Resource(t)
+        ResourceAttributes(t)
     }
 }
 
 pub fn create_resource(
-    resource: Resource,
+    resource: ResourceAttributes,
     world: &mut World,
     sprite_render: SpriteRender,
     x: f32,
@@ -47,6 +47,6 @@ pub fn create_resource(
         .build();
 }
 
-impl Component for Resource {
+impl Component for ResourceAttributes {
     type Storage = DenseVecStorage<Self>;
 }
