@@ -10,10 +10,9 @@ use amethyst::{
     ecs::prelude::{Entity, WorldExt},
     input::{is_close_requested, is_key_down},
     prelude::*,
-    renderer::{
-        palette::Srgba, resources::Tint, Camera, SpriteRender, SpriteSheet, Texture, Transparent,
-    },
-    ui::{UiCreator, UiFinder, UiText},
+    renderer::{Camera, SpriteRender},
+    // ui::{UiCreator, UiFinder, UiText},
+    ui::{UiFinder, UiText},
     utils::fps_counter::FpsCounter,
     winit::VirtualKeyCode,
 };

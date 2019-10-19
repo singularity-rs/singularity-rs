@@ -42,7 +42,6 @@ pub fn create_gunit(
 
     let color = match gunit.0 {
         GUnitType::Idle => Srgba::new(0.0, 0.0, 0.0, 1.0),
-        _ => panic!("Unimplemented!"),
     };
 
     let tint = Tint(color);

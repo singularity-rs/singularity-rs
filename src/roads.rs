@@ -1,8 +1,5 @@
 use amethyst::{
-    core::transform::Transform,
-    ecs::{Component, DenseVecStorage, World, WorldExt},
-    prelude::*,
-    renderer::{palette::Srgba, resources::Tint, SpriteRender},
+    ecs::{Component, DenseVecStorage},
 };
 
 // NEXT: Ask on discord: How do I draw a (non-debug) Line between to points? in #help
