@@ -11,7 +11,6 @@ use amethyst::{
     },
     ui::{RenderUi, UiBundle},
     utils::application_root_dir,
-    utils::fps_counter::FpsCounterBundle,
 };
 
 mod credits;
@@ -27,6 +26,7 @@ mod welcome;
 mod roads;
 mod general_unit;
 mod gunit_movement;
+
 
 /// Quick overview what you can do when running this example:
 ///
@@ -72,15 +72,6 @@ pub fn main() -> amethyst::Result<()> {
         // This system is in 'events.rs'. Basically, it registers UI events that
         // happen. Without it, the buttons will not react.
         .with_bundle(InputBundle::<StringBindings>::new())?
-        // Necessary for the FPS counter in the upper left corner to work.
-        // (simply uncommenting will fail at runtime, since the resource is expected to exist, you
-        // need to uncomment line 107-114 in game.rs for it to still work)
-        .with_bundle(FpsCounterBundle)?
-        .with_system_desc(
-            crate::gunit_movement::GUnitMovementSystemDesc,
-            "gunit_movement_system",
-            &[],
-        )
         // Without this, we would not get a picture.
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()

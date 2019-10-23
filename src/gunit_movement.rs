@@ -1,13 +1,11 @@
 use amethyst::{
-    core::{transform::Transform, SystemDesc},
-    derive::SystemDesc,
-    ecs::prelude::{Join, ReadStorage, System, SystemData, World, WriteStorage},
+    core::transform::Transform,
+    ecs::prelude::{Join, ReadStorage, System, WriteStorage},
 };
 use nalgebra::base::Vector3;
 use crate::general_unit::*;
 
-#[derive(SystemDesc)]
-#[system_desc(name(GUnitMovementSystemDesc))]
+#[derive(Default)]
 pub struct GUnitMovementSystem;
 
 impl<'s> System<'s> for GUnitMovementSystem {
