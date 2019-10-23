@@ -14,7 +14,7 @@ nalgebra = "0.18.1"
 
 
 [features]
-default = ["vulkan", "no-slow-safety-checks"]
+default = ["vulkan"]
 empty = ["amethyst/empty"]
 metal = ["amethyst/metal"]
 vulkan = ["amethyst/vulkan"]
