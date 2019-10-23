@@ -36,20 +36,19 @@ pub enum PlatformType {
 }
 
 #[derive(Debug, Default, Copy, Clone)]
-pub struct Platform(PlatformType);
+pub struct PlatformAttributes(PlatformType);
 
 pub fn create_platform(
-    platform: Platform,
+    platform: PlatformAttributes,
     world: &mut World,
     sprite_render: SpriteRender,
     x: f32,
     y: f32,
 ) {
-    // let sprite_render: &SpriteRender = &*(world.fetch::<SpriteRender>());
 
     let mut trans = Transform::default();
     trans.set_translation_xyz(x, y, crate::layers::BasePlatformLayer);
-    *trans.scale_mut() *= 0.2;
+    *trans.scale_mut() *= 0.25;
 
     let color = match platform.0 {
         PlatformType::Blank => Srgba::new(1.0, 1.0, 1.0, 0.8),
@@ -67,13 +66,7 @@ pub fn create_platform(
         .build();
 }
 
-impl Component for Platform {
+impl Component for PlatformAttributes {
     type Storage = DenseVecStorage<Self>;
 }
 
-#[derive(Debug, Default)]
-pub struct Road();
-
-impl Component for Road {
-    type Storage = DenseVecStorage<Self>;
-}

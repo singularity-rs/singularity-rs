@@ -29,7 +29,7 @@ pub const ResourceLayer: f32 = 0.5;
 
 #[allow(non_upper_case_globals, dead_code)]
 /// A float depicting the layer for general units
-const GeneralUnitLayer: f32 = 0.6;
+pub const GeneralUnitLayer: f32 = 0.6;
 
 #[allow(non_upper_case_globals, dead_code)]
 /// A float depicting the layer for the fog of war

@@ -9,11 +9,12 @@ amethyst = "0.13.2"
 # amethyst = { path = "../amethyst" }
 log = { version = "0.4.8", features = ["serde"] }
 derivative = "1.0.3"
+nalgebra = "0.18.1"
 
 
 
 [features]
-default = ["vulkan", "no-slow-safety-checks"]
+default = ["vulkan"]
 empty = ["amethyst/empty"]
 metal = ["amethyst/metal"]
 vulkan = ["amethyst/vulkan"]
