@@ -112,6 +112,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
             200.,
             300.,
         );
+
         let p2 = create_platform(
             PlatformAttributes::default(),
             world,
@@ -120,7 +121,16 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
             600.,
         );
 
+        let p3 = create_platform(
+            PlatformAttributes::default(),
+            world,
+            sprite_render.clone(),
+            800.,
+            300.,
+        );
+
         connect_platforms(world, p1, p2);
+        connect_platforms(world, p2, p3);
 
 
         let unit = create_gunit(
