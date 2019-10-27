@@ -41,6 +41,13 @@ pub struct PlatformAttributes{
     connected: Vec<Entity>,
 }
 
+
+impl PlatformAttributes {
+    pub fn get_connected(&self) -> &Vec<Entity> {
+        &self.connected
+    }
+}
+
 pub fn create_platform(
     platform: PlatformAttributes,
     world: &mut World,

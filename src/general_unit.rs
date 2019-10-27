@@ -41,8 +41,12 @@ pub struct GUnitAttributes{
     /// or, in transit between two Platforms
     last: Option<Entity>,
     next: Option<Entity>,
-    pub velocity: f32,
-    pub target_location: Option<Vector3<f32>>,
+    /// this is the actual location of the next target
+    target_location: Option<Vector3<f32>>,
+    /// Overarching, the goal might be a platform
+    goal: Option<Entity>,
+    /// Units tend to have a maximum Velocity
+    velocity: f32,
 }
 
 impl GUnitAttributes {
@@ -51,12 +55,31 @@ impl GUnitAttributes {
         GUnitAttributes { velocity: 3.0, ..Default::default() }
     }
 
+    pub fn get_target_location(&self) -> &Option<Vector3<f32>> {
+        &self.target_location
+    }
+
+    pub fn get_velocity(&self) -> &f32 {
+        &self.velocity
+    }
+
+    pub fn get_current_platform(&self) -> &Option<Entity> {
+        &self.on
+    }
+
     pub fn set_platform(
         &mut self,
         platform: Entity,
     ) {
         self.target_location = None;
         self.on = Some(platform);
+    }
+
+    pub fn set_goal(
+        &mut self,
+        platform: Entity,
+    ) {
+        self.goal = Some(platform);
     }
 
     pub fn set_target_platform(
@@ -112,6 +135,24 @@ pub fn create_gunit(
         .build()
 }
 
+
+// --------------------- Only for testing? ---------------------
+
+#[allow(dead_code)]
+pub fn unit_set_goal(
+    world: &mut World,
+    unit: Entity,
+    platform: Entity
+    ) {
+
+    let mut gunit_attr_storage = world.write_storage::<GUnitAttributes>();
+
+    let unit_attrs = gunit_attr_storage.get_mut(unit).expect("Failed to get Unit Attributes from supposed Unit Entity");
+
+    unit_attrs.set_goal(platform);
+}
+
+#[allow(dead_code)]
 pub fn unit_set_platform(
     world: &mut World,
     unit: Entity,
@@ -125,6 +166,7 @@ pub fn unit_set_platform(
     unit_attrs.set_platform(platform);
 }
 
+#[allow(dead_code)]
 pub fn unit_set_target_platform(
     world: &mut World,
     unit: Entity,

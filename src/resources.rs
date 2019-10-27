@@ -1,6 +1,6 @@
 use amethyst::{
     core::transform::Transform,
-    ecs::{Component, DenseVecStorage, World, WorldExt},
+    ecs::{Component, DenseVecStorage, World, WorldExt, Entity},
     prelude::*,
     renderer::{palette::Srgba, resources::Tint, SpriteRender},
 };
@@ -26,7 +26,7 @@ pub fn create_resource(
     sprite_render: SpriteRender,
     x: f32,
     y: f32,
-) {
+) -> Entity {
     let mut trans = Transform::default();
     trans.set_translation_xyz(x, y, crate::layers::ResourceLayer);
     *trans.scale_mut() *= 0.07;
@@ -44,7 +44,7 @@ pub fn create_resource(
         .with(resource)
         .with(trans)
         .with(tint)
-        .build();
+        .build()
 }
 
 impl Component for ResourceAttributes {

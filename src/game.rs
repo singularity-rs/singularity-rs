@@ -143,17 +143,20 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         unit_set_platform(world, unit, p2);
 
-        unit_set_target_platform(world, unit, p1);
+        // unit_set_target_platform(world, unit, p1);
+
+        unit_set_goal(world, unit, p3);
 
 
-        create_resource(
+        let _res = create_resource(
             ResourceAttributes::new(ResourceType::Perl),
             world,
             sprite_render.clone(),
-            200.,
+            800.,
             300.,
         );
 
+        // resource_set_platform(world, res, p3)
 
    }
 

@@ -13,6 +13,8 @@ use amethyst::{
     utils::application_root_dir,
 };
 
+extern crate rand;
+
 mod credits;
 mod events;
 mod game;
@@ -26,6 +28,9 @@ mod welcome;
 mod roads;
 mod general_unit;
 mod gunit_movement;
+mod distribution_manager;
+mod tasks;
+mod platform_actions;
 
 
 /// Quick overview what you can do when running this example:
