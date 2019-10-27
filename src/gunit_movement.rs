@@ -1,9 +1,10 @@
 use amethyst::{
     core::transform::Transform,
     ecs::prelude::{Join, ReadStorage, System, WriteStorage},
+    core::math::Vector3,
 };
-use nalgebra::base::Vector3;
 use crate::general_unit::*;
+use crate::platform::*;
 
 #[derive(Default)]
 pub struct GUnitMovementSystem;
