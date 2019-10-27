@@ -1,6 +1,6 @@
 use amethyst::{
     core::transform::Transform,
-    ecs::{Component, DenseVecStorage, World, WorldExt},
+    ecs::{Component, DenseVecStorage, World, WorldExt, Entity},
     prelude::*,
     renderer::{palette::Srgba, resources::Tint, SpriteRender},
 };
@@ -35,8 +35,11 @@ pub enum PlatformType {
     _ExhaustiveMatches,
 }
 
-#[derive(Debug, Default, Copy, Clone)]
-pub struct PlatformAttributes(PlatformType);
+#[derive(Debug, Default)]
+pub struct PlatformAttributes{
+    platform_type: PlatformType,
+    connected: Vec<Entity>,
+}
 
 pub fn create_platform(
     platform: PlatformAttributes,
@@ -44,13 +47,13 @@ pub fn create_platform(
     sprite_render: SpriteRender,
     x: f32,
     y: f32,
-) {
+) -> Entity {
 
     let mut trans = Transform::default();
     trans.set_translation_xyz(x, y, crate::layers::BasePlatformLayer);
     *trans.scale_mut() *= 0.25;
 
-    let color = match platform.0 {
+    let color = match platform.platform_type {
         PlatformType::Blank => Srgba::new(1.0, 1.0, 1.0, 0.8),
         _ => panic!("Unimplemented!"),
     };
@@ -63,8 +66,32 @@ pub fn create_platform(
         .with(platform)
         .with(trans)
         .with(tint)
-        .build();
+        .build()
 }
+
+pub fn connect_platforms(
+    world: &mut World,
+    p1: Entity,
+    p2: Entity,
+    ) {
+
+    // let my_entity = world.create_entity().with(MyComponent).build();
+    // let mut storage = world.write_storage::<MyComponent>();
+    // let mut my = storage.get_mut(my_entity).expect("Failed to get component for entity");
+
+    let mut platform_attr_storage = world.write_storage::<PlatformAttributes>();
+
+    let p1_attrs = platform_attr_storage.get_mut(p1).expect("Failed to get Platform Attributes from supposed Platform Entity");
+
+    p1_attrs.connected.push(p2);
+
+
+    let p2_attrs = platform_attr_storage.get_mut(p2).expect("Failed to get Platform Attributes from supposed Platform Entity");
+
+    p2_attrs.connected.push(p1);
+
+}
+
 
 impl Component for PlatformAttributes {
     type Storage = DenseVecStorage<Self>;

@@ -10,6 +10,8 @@ use amethyst::{
 
 use std::iter;
 
+// pub const EXPECTED_STR: String = "Failed to get {type} Attributes from supposed {type} Entity".to_string();
+
 /// delete the specified root entity and all of its descendents as specified
 /// by the Parent component and maintained by the ParentHierarchy resource
 // from https://github.com/amethyst/evoli src/utils/hierarchy_util.rs

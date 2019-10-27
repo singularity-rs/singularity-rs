@@ -34,51 +34,21 @@ fn initialise_camera(world: &mut World) {
         .build();
 }
 
-fn initialize_platforms(world: &mut World, sprite_render: SpriteRender) {
+fn initialize_platforms(world: &mut World) {
     // let sprite_sheet = load_sprite_sheet(world, "pong_spritesheet");
 
     world.register::<PlatformAttributes>();
 
-    create_platform(
-        PlatformAttributes::default(),
-        world,
-        sprite_render.clone(),
-        200.,
-        300.,
-    );
-    create_platform(
-        PlatformAttributes::default(),
-        world,
-        sprite_render.clone(),
-        800.,
-        600.,
-    );
 }
 
-fn initialize_resources(world: &mut World, sprite_render: SpriteRender) {
+fn initialize_resources(world: &mut World) {
 
     world.register::<ResourceAttributes>();
-
-    create_resource(
-        ResourceAttributes::new(ResourceType::Perl),
-        world,
-        sprite_render.clone(),
-        200.,
-        300.,
-    );
 }
 
-fn initialize_gunits(world: &mut World, sprite_render: SpriteRender) {
+fn initialize_gunits(world: &mut World) {
 
     world.register::<GUnitAttributes>();
-
-    create_gunit(
-        GUnitAttributes::default(),
-        world,
-        sprite_render.clone(),
-        810.,
-        605.,
-    );
 }
 
 
@@ -87,8 +57,6 @@ pub struct Game<'a, 'b> {
     dispatcher: Option<Dispatcher<'a, 'b>>,
     paused: bool,
     ui_root: Option<Entity>,
-    fps_display: Option<Entity>,
-    random_text: Option<Entity>,
 }
 
 impl<'a, 'b> SimpleState for Game<'a, 'b> {
@@ -101,17 +69,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
                   &[],
             );
         // add systems here
-        // dispatcher_builder.add(MoveBallsSystem, "move_balls_system", &[]);
-        // dispatcher_builder.add(MovePaddlesSystem, "move_paddles_system", &[]);
-
-        // Build and setup the `Dispatcher`.
-        let mut dispatcher = dispatcher_builder
-            .with_pool((*world.read_resource::<ArcThreadPool>()).clone())
-            .build();
-        dispatcher.setup(world);
-
-        self.dispatcher = Some(dispatcher);
-
 
 
         let sprite_sheet = load_sprite_sheet(world, "ball");
@@ -122,20 +79,73 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
             sprite_number: 0, // platform is the first/only sprite in the sprite_sheet
         };
 
-        // world.insert(sprite_render.clone());
-
+        // initializing ... mainly adding the required resources
         initialise_camera(&mut world);
-        initialize_platforms(&mut world, sprite_render.clone());
-        initialize_resources(&mut world, sprite_render.clone());
-        initialize_gunits(&mut world, sprite_render.clone());
-
+        initialize_platforms(&mut world);
+        initialize_resources(&mut world);
+        initialize_gunits(&mut world);
 
         // needed for registering audio output.
         init_output(&mut world);
 
         // self.ui_root =
         //     Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/game.ron", ())));
-    }
+
+
+        // Build and setup the `Dispatcher`.
+        let mut dispatcher = dispatcher_builder
+            .with_pool((*world.read_resource::<ArcThreadPool>()).clone())
+            .build();
+        dispatcher.setup(world);
+
+        self.dispatcher = Some(dispatcher);
+
+
+        // ------------ DEBUG / TESTING -------------------------
+
+
+        // this is only for debugging purposes
+        let p1 = create_platform(
+            PlatformAttributes::default(),
+            world,
+            sprite_render.clone(),
+            200.,
+            300.,
+        );
+        let p2 = create_platform(
+            PlatformAttributes::default(),
+            world,
+            sprite_render.clone(),
+            800.,
+            600.,
+        );
+
+        connect_platforms(world, p1, p2);
+
+
+        let unit = create_gunit(
+            GUnitAttributes::new(),
+            world,
+            sprite_render.clone(),
+            810.,
+            605.,
+        );
+
+        unit_set_platform(world, unit, p2);
+
+        unit_set_target_platform(world, unit, p1);
+
+
+        create_resource(
+            ResourceAttributes::new(ResourceType::Perl),
+            world,
+            sprite_render.clone(),
+            200.,
+            300.,
+        );
+
+
+   }
 
     fn on_pause(&mut self, _data: StateData<'_, GameData<'_, '_>>) {
         self.paused = true;
@@ -150,8 +160,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
             delete_hierarchy(entity, data.world).expect("Failed to remove Game Screen");
         }
         self.ui_root = None;
-        self.fps_display = None;
-        self.random_text = None;
     }
 
     fn handle_event(

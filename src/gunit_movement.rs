@@ -16,10 +16,20 @@ impl<'s> System<'s> for GUnitMovementSystem {
     );
 
     fn run(&mut self, (mut transforms, gunits): Self::SystemData) {
-        for (_gunit, trans) in (&gunits, &mut transforms).join() {
+        for (gunit, trans) in (&gunits, &mut transforms).join() {
 
-            *trans.translation_mut() += Vector3::new(-1.0, -1.0, 0.0);
+            if let Some(target) = gunit.target_location {
+                let diff = target - trans.translation();
 
+                let mut vel = gunit.velocity;
+
+                if diff.norm() < 30.0 {
+                    vel = diff.norm() * vel / 30.0;
+                }
+
+                *trans.translation_mut() += diff.normalize() * vel;
+
+            }
         }
     }
 }
