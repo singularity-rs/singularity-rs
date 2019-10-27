@@ -9,20 +9,20 @@ endif
 set shortmess=aoO
 badd +1 src/credits.rs
 badd +0 src/events.rs
-badd +81 src/game.rs
-badd +23 src/general_unit.rs
-badd +6 src/gunit_movement.rs
-badd +0 src/layers.rs
-badd +1 src/main.rs
+badd +144 src/game.rs
+badd +51 src/general_unit.rs
+badd +22 src/gunit_movement.rs
+badd +37 src/layers.rs
+badd +17 src/main.rs
 badd +0 src/main_v2.rs
 badd +0 src/menu.rs
 badd +0 src/pause.rs
-badd +1 src/platform.rs
+badd +89 src/platform.rs
 badd +0 src/pong.rs
 badd +0 src/prefabs.rs
-badd +0 src/resources.rs
+badd +2 src/resources.rs
 badd +0 src/roads.rs
-badd +13 src/util.rs
+badd +15 src/util.rs
 badd +0 src/welcome.rs
 badd +0 assets/ui/credits.ron
 badd +0 assets/ui/custom.ron
@@ -38,6 +38,9 @@ badd +0 assets/ui/pause_menu.ron
 badd +0 assets/ui/paused.ron
 badd +0 assets/ui/welcome.ron
 badd +12 Cargo.toml
+badd +0 src/distribution_manager.rs
+badd +34 src/tasks.rs
+badd +5 src/platform_actions.rs
 argglobal
 silent! argdel *
 $argadd src/credits.rs
@@ -70,7 +73,7 @@ $argadd assets/ui/own.ron
 $argadd assets/ui/pause_menu.ron
 $argadd assets/ui/paused.ron
 $argadd assets/ui/welcome.ron
-edit src/platform.rs
+edit src/tasks.rs
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -100,7 +103,7 @@ exe 'vert 3resize ' . ((&columns * 94 + 94) / 189)
 exe '4resize ' . ((&lines * 32 + 34) / 69)
 exe 'vert 4resize ' . ((&columns * 94 + 94) / 189)
 argglobal
-if bufexists('src/platform.rs') | buffer src/platform.rs | else | edit src/platform.rs | endif
+if bufexists('src/tasks.rs') | buffer src/tasks.rs | else | edit src/tasks.rs | endif
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -110,48 +113,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 99 - ((29 * winheight(0) + 16) / 33)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-99
-normal! 0
-wincmd w
-argglobal
-if bufexists('src/game.rs') | buffer src/game.rs | else | edit src/game.rs | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 136 - ((30 * winheight(0) + 16) / 32)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-136
-normal! 050|
-wincmd w
-argglobal
-if bufexists('src/general_unit.rs') | buffer src/general_unit.rs | else | edit src/general_unit.rs | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 32 - ((31 * winheight(0) + 16) / 33)
+let s:l = 32 - ((26 * winheight(0) + 16) / 33)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 32
-normal! 08|
+normal! 05|
 wincmd w
 argglobal
 if bufexists('src/gunit_movement.rs') | buffer src/gunit_movement.rs | else | edit src/gunit_movement.rs | endif
@@ -164,14 +131,49 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 24 - ((23 * winheight(0) + 16) / 32)
+let s:l = 1 - ((0 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-24
-normal! 041|
+1
+normal! 0
 wincmd w
-4wincmd w
+argglobal
+if bufexists('src/distribution_manager.rs') | buffer src/distribution_manager.rs | else | edit src/distribution_manager.rs | endif
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 40 - ((18 * winheight(0) + 16) / 33)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+40
+normal! 0
+wincmd w
+argglobal
+if bufexists('src/distribution_manager.rs') | buffer src/distribution_manager.rs | else | edit src/distribution_manager.rs | endif
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 13 - ((12 * winheight(0) + 16) / 32)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+13
+normal! 0
+wincmd w
 exe '1resize ' . ((&lines * 33 + 34) / 69)
 exe 'vert 1resize ' . ((&columns * 94 + 94) / 189)
 exe '2resize ' . ((&lines * 32 + 34) / 69)
