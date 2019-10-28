@@ -1,12 +1,14 @@
 use amethyst::{
     core::transform::Transform,
     core::math::Vector3,
-    ecs::{Component, DenseVecStorage, VecStorage, World, WorldExt, Entity},
+    ecs::{Component, DenseVecStorage, VecStorage, World, WorldExt, Entity, ReadStorage},
     prelude::*,
     renderer::{palette::Srgba, resources::Tint, SpriteRender},
 };
 use derivative::Derivative;
-
+use crate::gunit::tasks::Task;
+use crate::distribution_manager::DistributionManager;
+use crate::platform::platform::PlatformAttributes;
 
 pub const SLOWDOWN_DIST: f32 = 50.0;
 pub const ARRIVED_DIST: f32 = 1.0;
@@ -20,7 +22,7 @@ impl Component for Arrived {
 }
 
 
-#[derive(Debug, Derivative)]
+#[derive(Debug, Derivative, Copy, Clone)]
 #[derivative(Default)]
 pub enum GUnitType {
     /// By default, any unit is Idle at first.
@@ -33,9 +35,11 @@ pub enum GUnitType {
     // Defense,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GUnitAttributes{
     gtype: GUnitType,
+    /// The Task the Unit is working on
+    task: Option<Task>,
     /// might be idling/working on a Platform
     on: Option<Entity>,
     /// or, in transit between two Platforms
@@ -43,7 +47,7 @@ pub struct GUnitAttributes{
     next: Option<Entity>,
     /// this is the actual location of the next target
     target_location: Option<Vector3<f32>>,
-    /// Overarching, the goal might be a platform
+    /// Overarching, the goal could be a platform
     goal: Option<Entity>,
     /// Units tend to have a maximum Velocity
     velocity: f32,
@@ -99,6 +103,41 @@ impl GUnitAttributes {
         self.on = self.next;
         self.next = None;
         self.target_location = None;
+    }
+
+    pub fn get_task(
+        &self
+    ) -> &Option<Task> {
+        &self.task
+    }
+
+    pub fn update<'s>(
+        &mut self,
+        distr_mgr: &mut DistributionManager,
+        platform_attrs: &ReadStorage<'s, PlatformAttributes>,
+        transform: &ReadStorage<'s, Transform>,
+    ) {
+        if let Some(task) = &self.task {
+            println!("Unit has Task: {:?}", task);
+            match task.job_type {
+                GUnitType::Idle => {
+                    if let Some(ent) = self.on {
+                        if self.on == task.end_platform {
+                            self.task = None;
+                        }
+                    }
+                }
+            }
+        } else {
+            println!("Unit does not have Task!");
+            self.task = distr_mgr.request_new_task(self.gtype, *self, &platform_attrs);
+            if let Some(task) = self.task {
+                if let Some(platform) = task.end_platform {
+                    let plat_trans = transform.get(platform).expect("23");
+                    self.set_target_platform(platform, *plat_trans.translation());
+                }
+            }
+        }
     }
 }
 

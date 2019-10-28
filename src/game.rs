@@ -14,6 +14,7 @@ use amethyst::{
     winit::VirtualKeyCode,
 };
 use log::info;
+use crate::distribution_manager::DistributionManager;
 
 pub const ARENA_HEIGHT: f32 = 900.0;
 pub const ARENA_WIDTH: f32 = 1600.0;
@@ -35,22 +36,21 @@ fn initialise_camera(world: &mut World) {
 }
 
 fn initialize_platforms(world: &mut World) {
-    // let sprite_sheet = load_sprite_sheet(world, "pong_spritesheet");
-
     world.register::<PlatformAttributes>();
 
 }
 
 fn initialize_resources(world: &mut World) {
-
     world.register::<ResourceAttributes>();
 }
 
 fn initialize_gunits(world: &mut World) {
-
     world.register::<GUnitAttributes>();
 }
 
+fn initialize_distribution(world: &mut World) {
+    world.insert(DistributionManager::default());
+}
 
 #[derive(Default)]
 pub struct Game<'a, 'b> {
@@ -67,6 +67,10 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
             .with(crate::gunit::gunit_movement::GUnitMovementSystem::default(),
                   "gunit_movement_system",
                   &[],
+            )
+            .with(crate::gunit::gunit_state_system::GUnitStateSystem::default(),
+                "gunit_state_system",
+                &[],
             );
         // add systems here
 
@@ -84,6 +88,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         initialize_platforms(&mut world);
         initialize_resources(&mut world);
         initialize_gunits(&mut world);
+        initialize_distribution(&mut world);
 
         // needed for registering audio output.
         init_output(&mut world);

@@ -22,7 +22,7 @@ use crate::resources::ResourceType;
 // Build:
 //      begin_platform: Platform to get a Resource from
 //      end_platform: Platform on which something is built (e.g. a Blueprint)
-#[derive(Default)]
+#[derive(Default, Debug, Copy, Clone)]
 pub struct Task {
     pub job_type: GUnitType,
     pub begin_platform: Option<Entity>,

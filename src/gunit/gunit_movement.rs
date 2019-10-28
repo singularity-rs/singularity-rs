@@ -31,7 +31,7 @@ impl<'s> System<'s> for GUnitMovementSystem {
                 if diff.norm() < ARRIVED_DIST {
                     gunit.arrive();
                 }
-            }
+            } 
         }
     }
 }

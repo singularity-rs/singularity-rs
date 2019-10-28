@@ -1,5 +1,5 @@
 use amethyst::{
-    ecs::{Entity, prelude::WriteStorage},
+    ecs::{Entity, prelude::ReadStorage},
 };
 use crate::gunit::tasks::Task;
 use crate::gunit::general_unit::{GUnitAttributes, GUnitType};
@@ -7,6 +7,7 @@ use crate::platform::platform::PlatformAttributes;
 use rand::seq::SliceRandom;
 
 
+#[derive(Default)]
 pub struct DistributionManager {
     idle_units: Vec<Entity>,
     // ...
@@ -20,9 +21,13 @@ pub struct DistributionManager {
 
 impl DistributionManager {
 
-    fn request_new_task<'s>(&self, task_type: GUnitType, unit: GUnitAttributes, storage: WriteStorage<'s, PlatformAttributes>) -> Task {
+    pub fn register_unit(&mut self, unit: Entity) {
+        self.idle_units.push(unit);
+    }
 
-        let mut task = Task::default();
+    pub fn request_new_task<'s>(&mut self, task_type: GUnitType, unit: GUnitAttributes, storage: &ReadStorage<'s, PlatformAttributes>) -> Option<Task> {
+
+        let task = Task::default();
 
         match task_type {
             GUnitType::Idle => {
@@ -32,12 +37,11 @@ impl DistributionManager {
                     let connected = platform.get_connected();
                     
                     if connected.len() > 0 {
-                        task = Task { end_platform: connected.choose(&mut rand::thread_rng()).copied(), ..task };
+                        return Some(Task { end_platform: connected.choose(&mut rand::thread_rng()).copied(), ..task });
                     }
                 }
             },
         };
-
-        task
+        None
     }
 }
