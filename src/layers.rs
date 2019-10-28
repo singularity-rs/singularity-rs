@@ -17,7 +17,7 @@ const FreeMovingUnitLayer: f32 = 0.2;
 
 #[allow(non_upper_case_globals, dead_code)]
 /// A float depicting the layer for roads
-const RoadLayer: f32 = 0.3;
+pub const RoadLayer: f32 = 0.3;
 
 #[allow(non_upper_case_globals)]
 /// A float depicting the layer for platforms bases

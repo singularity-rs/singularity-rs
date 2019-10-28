@@ -2,7 +2,8 @@ use amethyst::{
     core::transform::Transform,
     ecs::{Component, DenseVecStorage, World, WorldExt, Entity},
     prelude::*,
-    renderer::{palette::Srgba, resources::Tint, SpriteRender},
+    core::math::Point,
+    renderer::{palette::Srgba, resources::Tint, SpriteRender, debug_drawing::DebugLinesComponent},
 };
 use derivative::Derivative;
 
@@ -82,21 +83,38 @@ pub fn connect_platforms(
     p2: Entity,
     ) {
 
-    // let my_entity = world.create_entity().with(MyComponent).build();
-    // let mut storage = world.write_storage::<MyComponent>();
-    // let mut my = storage.get_mut(my_entity).expect("Failed to get component for entity");
-
     let mut platform_attr_storage = world.write_storage::<PlatformAttributes>();
+    let loc_storage = world.read_storage::<Transform>();
 
     let p1_attrs = platform_attr_storage.get_mut(p1).expect("Failed to get Platform Attributes from supposed Platform Entity");
+    let mut p1_loc = loc_storage.get(p1).expect("24").clone();
+    p1_loc.set_translation_z(crate::layers::RoadLayer);
 
     p1_attrs.connected.push(p2);
 
 
     let p2_attrs = platform_attr_storage.get_mut(p2).expect("Failed to get Platform Attributes from supposed Platform Entity");
+    let mut p2_loc = loc_storage.get(p2).expect("25").clone();
+    p2_loc.set_translation_z(crate::layers::RoadLayer);
 
     p2_attrs.connected.push(p1);
 
+    let mut lines = DebugLinesComponent::new();
+
+    lines
+        .add_line(
+            Point::from(*p1_loc.translation()),
+            Point::from(*p2_loc.translation()),
+            Srgba::new(0.0, 0.0, 0.0, 1.0)
+        );
+
+    drop(platform_attr_storage);
+    drop(loc_storage);
+
+    world
+        .create_entity()
+        .with(lines)
+        .build();
 }
 
 

@@ -5,7 +5,7 @@ use amethyst::{
     input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
-        plugins::{RenderFlat2D, RenderToWindow},
+        plugins::{RenderFlat2D, RenderToWindow, RenderDebugLines},
         types::DefaultBackend,
         RenderingBundle,
     },
@@ -81,11 +81,13 @@ pub fn main() -> amethyst::Result<()> {
                         // .with_clear([0.005, 0.005, 0.005, 1.0]), // Dark Grey
                         .with_clear([0.05, 0.05, 0.05, 1.0]),
                 )
+                // Drawing the roads later on
+                .with_plugin(RenderDebugLines::default())
                 // Without this, all of our beautiful UI would not get drawn.
                 // It will work, but we won't see a thing.
                 .with_plugin(RenderUi::default())
                 // Required for rendering SpriteRender instances
-                .with_plugin(RenderFlat2D::default()),
+                .with_plugin(RenderFlat2D::default())
         )?;
 
     // creating the Application with the assets_dir, the first Screen, and the game_data with it's

@@ -10,7 +10,7 @@ use amethyst::{
     ecs::prelude::{Entity, WorldExt, Dispatcher, DispatcherBuilder},
     input::{is_close_requested, is_key_down},
     prelude::*,
-    renderer::{Camera, SpriteRender},
+    renderer::{Camera, SpriteRender, debug_drawing::{DebugLines, DebugLinesComponent, DebugLinesParams}},
     winit::VirtualKeyCode,
 };
 use log::info;
@@ -37,7 +37,6 @@ fn initialise_camera(world: &mut World) {
 
 fn initialize_platforms(world: &mut World) {
     world.register::<PlatformAttributes>();
-
 }
 
 fn initialize_resources(world: &mut World) {
@@ -62,6 +61,8 @@ pub struct Game<'a, 'b> {
 impl<'a, 'b> SimpleState for Game<'a, 'b> {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let mut world = data.world;
+
+        world.insert(DebugLinesParams { line_width: 3.0 });
 
         let dispatcher_builder = DispatcherBuilder::new()
             .with(crate::gunit::gunit_movement::GUnitMovementSystem::default(),

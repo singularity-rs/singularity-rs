@@ -59,14 +59,17 @@ impl GUnitAttributes {
         GUnitAttributes { velocity: 3.0, ..Default::default() }
     }
 
+    #[inline]
     pub fn get_target_location(&self) -> &Option<Vector3<f32>> {
         &self.target_location
     }
 
+    #[inline]
     pub fn get_velocity(&self) -> &f32 {
         &self.velocity
     }
 
+    #[inline]
     pub fn get_current_platform(&self) -> &Option<Entity> {
         &self.on
     }
@@ -118,7 +121,6 @@ impl GUnitAttributes {
         transform: &ReadStorage<'s, Transform>,
     ) {
         if let Some(task) = &self.task {
-            println!("Unit has Task: {:?}", task);
             match task.job_type {
                 GUnitType::Idle => {
                     if let Some(ent) = self.on {
@@ -129,7 +131,6 @@ impl GUnitAttributes {
                 }
             }
         } else {
-            println!("Unit does not have Task!");
             self.task = distr_mgr.request_new_task(self.gtype, *self, &platform_attrs);
             if let Some(task) = self.task {
                 if let Some(platform) = task.end_platform {
