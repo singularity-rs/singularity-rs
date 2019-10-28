@@ -1,7 +1,7 @@
-use crate::pause::PauseMenuState;
-use crate::platform::*;
+use crate::menu::pause::PauseMenuState;
+use crate::platform::platform::*;
 use crate::resources::*;
-use crate::general_unit::*;
+use crate::gunit::general_unit::*;
 use crate::util::delete_hierarchy;
 use crate::util::load_sprite_sheet;
 use amethyst::{
@@ -64,7 +64,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         let mut world = data.world;
 
         let dispatcher_builder = DispatcherBuilder::new()
-            .with(crate::gunit_movement::GUnitMovementSystem::default(),
+            .with(crate::gunit::gunit_movement::GUnitMovementSystem::default(),
                   "gunit_movement_system",
                   &[],
             );
@@ -145,7 +145,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // unit_set_target_platform(world, unit, p1);
 
-        unit_set_goal(world, unit, p3);
+        // unit_set_goal(world, unit, p3);
 
 
         let _res = create_resource(

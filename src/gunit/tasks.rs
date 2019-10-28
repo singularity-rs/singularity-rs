@@ -1,14 +1,9 @@
 use amethyst::{
-    core::transform::Transform,
-    core::math::Vector3,
-    ecs::{Component, DenseVecStorage, VecStorage, World, WorldExt, Entity},
-    prelude::*,
-    renderer::{palette::Srgba, resources::Tint, SpriteRender},
+    ecs::Entity,
 };
-use derivative::Derivative;
-use crate::general_unit::*;
-use crate::resources::*;
-use crate::platform_actions::*;
+use crate::gunit::general_unit::GUnitType;
+use crate::platform::platform_actions::PlatformActionType;
+use crate::resources::ResourceType;
 
 /// A `Task` has one of the following configurations, based on GUnitType:
 /// Idle:

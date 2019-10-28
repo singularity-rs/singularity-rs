@@ -15,22 +15,16 @@ use amethyst::{
 
 extern crate rand;
 
-mod credits;
 mod events;
 mod game;
 mod layers;
 mod menu;
-mod pause;
-mod platform;
 mod resources;
 mod util;
-mod welcome;
 mod roads;
-mod general_unit;
-mod gunit_movement;
 mod distribution_manager;
-mod tasks;
-mod platform_actions;
+mod platform;
+mod gunit;
 
 
 /// Quick overview what you can do when running this example:

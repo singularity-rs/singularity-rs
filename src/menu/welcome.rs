@@ -34,7 +34,7 @@ impl SimpleState for WelcomeScreen {
                     Trans::Quit
                 } else if is_mouse_button_down(&event, MouseButton::Left) {
                     info!("Switching to MainMenu!");
-                    Trans::Switch(Box::new(crate::menu::MainMenu::default()))
+                    Trans::Switch(Box::new(crate::menu::main_menu::MainMenu::default()))
                 } else {
                     Trans::None
                 }

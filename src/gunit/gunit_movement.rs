@@ -2,7 +2,7 @@ use amethyst::{
     core::transform::Transform,
     ecs::prelude::{Join, System, WriteStorage},
 };
-use crate::general_unit::*;
+use crate::gunit::general_unit::*;
 
 #[derive(Default)]
 pub struct GUnitMovementSystem;

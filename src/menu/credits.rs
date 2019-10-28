@@ -6,7 +6,7 @@ use amethyst::{
     winit::{MouseButton, VirtualKeyCode},
 };
 
-use crate::menu::MainMenu;
+use crate::menu::main_menu::MainMenu;
 use crate::util::delete_hierarchy;
 
 // A simple 'Screen' State, only capable of loading/showing the prefab ui and registering simple

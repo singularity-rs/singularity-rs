@@ -1,14 +1,9 @@
 use amethyst::{
-    core::transform::Transform,
-    core::math::Vector3,
-    ecs::{Component, DenseVecStorage, VecStorage, World, WorldExt, Entity, prelude::WriteStorage},
-    prelude::*,
-    renderer::{palette::Srgba, resources::Tint, SpriteRender},
+    ecs::{Entity, prelude::WriteStorage},
 };
-use derivative::Derivative;
-use crate::tasks::*;
-use crate::general_unit::*;
-use crate::platform::*;
+use crate::gunit::tasks::Task;
+use crate::gunit::general_unit::{GUnitAttributes, GUnitType};
+use crate::platform::platform::PlatformAttributes;
 use rand::seq::SliceRandom;
 
 
@@ -44,6 +39,5 @@ impl DistributionManager {
         };
 
         task
-
     }
 }

@@ -8,7 +8,7 @@ use amethyst::{
     TransEvent,
 };
 
-use crate::menu::MainMenu;
+use crate::menu::main_menu::MainMenu;
 
 /// Adapted, originally from amethyst/evoli src/states/pause_menu.rs
 
