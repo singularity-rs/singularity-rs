@@ -12,6 +12,7 @@ use crate::platform::platform::PlatformAttributes;
 
 pub const SLOWDOWN_DIST: f32 = 50.0;
 pub const ARRIVED_DIST: f32 = 1.0;
+pub const TARGET_OFFSET: f32 = 10.0;
 
 
 #[derive(Default)]
@@ -47,6 +48,8 @@ pub struct GUnitAttributes{
     next: Option<Entity>,
     /// this is the actual location of the next target
     target_location: Option<Vector3<f32>>,
+    /// Location where the unit started. Relevant for calculating the right side of the road.
+    starting_location: Option<Vector3<f32>>,
     /// Overarching, the goal could be a platform
     goal: Option<Entity>,
     /// Units tend to have a maximum Velocity
@@ -62,6 +65,11 @@ impl GUnitAttributes {
     #[inline]
     pub fn get_target_location(&self) -> &Option<Vector3<f32>> {
         &self.target_location
+    }
+
+    #[inline]
+    pub fn get_starting_location(&self) -> &Option<Vector3<f32>> {
+        &self.starting_location
     }
 
     #[inline]
@@ -100,6 +108,16 @@ impl GUnitAttributes {
         self.target_location = Some(target_location);
     }
 
+    pub fn update_starting_platform<'s>(
+        &mut self,
+        transform: &ReadStorage<'s, Transform>,
+    ) {
+        if let Some(current) = self.on {
+            let start_trans = transform.get(current).expect("25");
+            self.starting_location = Some(*start_trans.translation());
+        }
+    }
+
     pub fn arrive(
         &mut self
     ) {
@@ -134,6 +152,7 @@ impl GUnitAttributes {
             self.task = distr_mgr.request_new_task(self.gtype, *self, &platform_attrs);
             if let Some(task) = self.task {
                 if let Some(platform) = task.end_platform {
+                    self.update_starting_platform(transform);
                     let plat_trans = transform.get(platform).expect("23");
                     self.set_target_platform(platform, *plat_trans.translation());
                 }

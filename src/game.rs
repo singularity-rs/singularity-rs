@@ -62,6 +62,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let mut world = data.world;
 
+        world.insert(DebugLines::new());
         world.insert(DebugLinesParams { line_width: 3.0 });
 
         let dispatcher_builder = DispatcherBuilder::new()
@@ -208,7 +209,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         }
     }
 
-    fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
+    fn fixed_update(&mut self, data: StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         let world = &data.world;
 
         // it is important that the 'paused' field is actually pausing your game.
