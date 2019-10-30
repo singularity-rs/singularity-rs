@@ -25,6 +25,7 @@ mod roads;
 mod distribution_manager;
 mod platform;
 mod gunit;
+mod camera;
 
 
 /// Quick overview what you can do when running this example:
@@ -70,7 +71,8 @@ pub fn main() -> amethyst::Result<()> {
         )
         // This system is in 'events.rs'. Basically, it registers UI events that
         // happen. Without it, the buttons will not react.
-        .with_bundle(InputBundle::<StringBindings>::new())?
+        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(
+app_root.join("config/input.ron"))?)?
         // Without this, we would not get a picture.
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()

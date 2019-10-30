@@ -37,20 +37,25 @@ impl<'s> System<'s> for GUnitMovementSystem {
                     diff = d - current;
                     steer = -bd;
                     steer_weight = (c.x - d.x) * (current.y - d.y) - (c.y - d.y) * (current.x - d.x);
+                    // for some reason, this fixes everything.
+                    // Steering would be too sensitive otherwise.
                     steer_weight /= 1000.0;
 
+                    // // the negative steering value (bd) in blue
                     // debug_lines.draw_direction(
                     //     Point::from(*current),
                     //     bd,
                     //     Srgba::new(0.0, 0.0, 1.0, 1.0),
                     // );
 
+                    // // the current goal in red
                     // debug_lines.draw_direction(
                     //     Point::from(*current),
                     //     diff,
                     //     Srgba::new(1.0, 0.0, 0.0, 1.0),
                     // );
 
+                    // // the weighted steering in green
                     // debug_lines.draw_direction(
                     //     Point::from(*current),
                     //     steer * steer_weight,

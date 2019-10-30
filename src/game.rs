@@ -32,6 +32,7 @@ fn initialise_camera(world: &mut World) {
         .create_entity()
         .with(Camera::standard_2d(ARENA_WIDTH, ARENA_HEIGHT))
         .with(transform)
+        .named("camera")
         .build();
 }
 
@@ -72,6 +73,10 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
             )
             .with(crate::gunit::gunit_state_system::GUnitStateSystem::default(),
                 "gunit_state_system",
+                &[],
+            )
+            .with(crate::camera::CameraMovementSystem,
+                "camera_movement",
                 &[],
             );
         // add systems here
