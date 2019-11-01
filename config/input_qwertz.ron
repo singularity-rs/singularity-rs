@@ -6,12 +6,12 @@
 (
     axes: {
         "camera_x": Emulated(
-            pos: Key(A),
-            neg: Key(U),
+            pos: Key(D),
+            neg: Key(A),
         ),
         "camera_y": Emulated(
-            pos: Key(V),
-            neg: Key(I),
+            pos: Key(W),
+            neg: Key(S),
         ),
         // "camera_scale": Emulated(
         //     pos: Key(L),
@@ -19,8 +19,8 @@
         // ),
         "camera_scale": MouseWheel(horizontal: false),
         "camera_z": Emulated(
-            pos: Key(C),
-            neg: Key(E),
+            pos: Key(R),
+            neg: Key(F),
         ),
     },
     actions: {
