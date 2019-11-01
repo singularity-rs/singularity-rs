@@ -1,7 +1,7 @@
 use amethyst::{
     core::transform::Transform,
     ecs::prelude::{Join, System, WriteStorage, Write},
-    renderer::palette::Srgba,
+    // renderer::palette::Srgba,
     renderer::debug_drawing::DebugLines,
     core::math::*,
 };
@@ -17,7 +17,7 @@ impl<'s> System<'s> for GUnitMovementSystem {
         Write<'s, DebugLines>,
     );
 
-    fn run(&mut self, (mut transforms, mut gunits, mut debug_lines): Self::SystemData) {
+    fn run(&mut self, (mut transforms, mut gunits, mut _debug_lines): Self::SystemData) {
         for (gunit, trans) in (&mut gunits, &mut transforms).join() {
 
             if let Some(target) = &gunit.get_target_location() {

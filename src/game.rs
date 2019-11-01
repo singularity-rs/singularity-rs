@@ -10,7 +10,10 @@ use amethyst::{
     ecs::prelude::{Entity, WorldExt, Dispatcher, DispatcherBuilder},
     input::{is_close_requested, is_key_down},
     prelude::*,
-    renderer::{Camera, SpriteRender, debug_drawing::{DebugLines, DebugLinesComponent, DebugLinesParams}},
+    ui::UiCreator,
+    renderer::{Camera, SpriteRender,
+        debug_drawing::{// DebugLinesComponent, 
+            DebugLines, DebugLinesParams}},
     winit::VirtualKeyCode,
 };
 use log::info;

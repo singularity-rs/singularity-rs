@@ -1,28 +1,15 @@
 use amethyst::{
-    assets::{AssetStorage, Loader},
     core::{
-        math::{Point3, Vector2, Vector3},
-        Named, Parent, Time, Transform, TransformBundle,
+        math::Vector3,
+        Transform,
     },
     ecs::{
-        Component, Entities, Entity, Join, LazyUpdate, NullStorage, Read, ReadExpect, ReadStorage,
-        System, WriteStorage,
+        Entities, Join, Read, ReadStorage, System, WriteStorage,
     },
-    input::{is_close_requested, is_key_down, InputBundle, InputHandler, StringBindings},
-    prelude::*,
+    input::{InputHandler, StringBindings},
     renderer::{
-        camera::{ActiveCamera, Camera, Projection},
-        debug_drawing::DebugLinesComponent,
-        formats::texture::ImageFormat,
-        palette::Srgba,
-        sprite::{SpriteRender, SpriteSheet, SpriteSheetFormat, SpriteSheetHandle},
-        transparent::Transparent,
-        types::DefaultBackend,
-        RenderDebugLines, RenderFlat2D, RenderToWindow, RenderingBundle, Texture,
+        camera::{ActiveCamera, Camera},
     },
-    utils::application_root_dir,
-    window::ScreenDimensions,
-    winit,
 };
 
 #[derive(Default)]

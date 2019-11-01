@@ -126,6 +126,7 @@ impl GUnitAttributes {
         self.target_location = None;
     }
 
+    #[allow(dead_code)]
     pub fn get_task(
         &self
     ) -> &Option<Task> {
@@ -141,7 +142,7 @@ impl GUnitAttributes {
         if let Some(task) = &self.task {
             match task.job_type {
                 GUnitType::Idle => {
-                    if let Some(ent) = self.on {
+                    if let Some(_) = self.on {
                         if self.on == task.end_platform {
                             self.task = None;
                         }

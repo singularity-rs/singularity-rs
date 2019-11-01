@@ -7,6 +7,7 @@ use crate::platform::platform::PlatformAttributes;
 use rand::seq::SliceRandom;
 
 
+#[allow(dead_code)]
 #[derive(Default)]
 pub struct DistributionManager {
     idle_units: Vec<Entity>,
@@ -19,6 +20,7 @@ pub struct DistributionManager {
 }
 
 
+#[allow(dead_code)]
 impl DistributionManager {
 
     pub fn register_unit(&mut self, unit: Entity) {
