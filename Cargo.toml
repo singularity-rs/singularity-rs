@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 amethyst = "0.13.2"
+amethyst-imgui = "0.5"
 # amethyst = { path = "../amethyst" }
 log = { version = "0.4.8", features = ["serde"] }
 derivative = "1.0.3"

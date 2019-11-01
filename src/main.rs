@@ -12,6 +12,7 @@ use amethyst::{
     ui::{RenderUi, UiBundle},
     utils::application_root_dir,
 };
+use amethyst_imgui::RenderImgui;
 
 extern crate rand;
 
@@ -26,6 +27,7 @@ mod distribution_manager;
 mod platform;
 mod gunit;
 mod camera;
+mod game_ui;
 
 
 /// Quick overview what you can do when running this example:
@@ -90,6 +92,9 @@ app_root.join("config/input.ron"))?)?
                 .with_plugin(RenderUi::default())
                 // Required for rendering SpriteRender instances
                 .with_plugin(RenderFlat2D::default())
+                // For using ImGui
+                .with_plugin(RenderImgui::<amethyst::input::StringBindings>::default()),
+
         )?;
 
     // creating the Application with the assets_dir, the first Screen, and the game_data with it's

@@ -39,6 +39,13 @@ fn initialise_camera(world: &mut World) {
         .build();
 }
 
+fn initialize_ui(game: &mut Game, world: &mut World) {
+
+        game.ui_root =
+            Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/unit_distr.ron", ())));
+
+}
+
 fn initialize_platforms(world: &mut World) {
     world.register::<PlatformAttributes>();
 }
@@ -95,6 +102,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // initializing ... mainly adding the required resources
         initialise_camera(&mut world);
+        initialize_ui(self, &mut world);
         initialize_platforms(&mut world);
         initialize_resources(&mut world);
         initialize_gunits(&mut world);
@@ -102,9 +110,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // needed for registering audio output.
         init_output(&mut world);
-
-        // self.ui_root =
-        //     Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/game.ron", ())));
 
 
         // Build and setup the `Dispatcher`.
