@@ -1123,6 +1123,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "generic-array"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "typenum 1.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "genmesh"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1708,6 +1716,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "nalgebra"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "alga 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "approx 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "generic-array 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "matrixmultiply 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num-complex 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num-rational 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num-traits 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_distr 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "typenum 1.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "net2"
 version = "0.2.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2242,6 +2267,14 @@ version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "getrandom 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rand_distr"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2914,7 +2947,7 @@ dependencies = [
  "amethyst 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "derivative 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "nalgebra 0.18.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "nalgebra 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -3610,6 +3643,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum fxhash 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
 "checksum gcc 0.3.55 (registry+https://github.com/rust-lang/crates.io-index)" = "8f5f3913fa0bfe7ee1fd8248b6b9f42a5af4b9d65ec2dd2c3c26132b950ecfc2"
 "checksum generic-array 0.12.3 (registry+https://github.com/rust-lang/crates.io-index)" = "c68f0274ae0e023facc3c97b2e00f076be70e254bc851d972503b328db79b2ec"
+"checksum generic-array 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)" = "0ed1e761351b56f54eb9dcd0cfaca9fd0daecf93918e1cfc01c8a3d26ee7adcd"
 "checksum genmesh 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)" = "093d52460513e54346e440eadad05a799378654001d7c3a384c3d1e59b5f1e9f"
 "checksum getrandom 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)" = "473a1265acc8ff1e808cd0a1af8cee3c2ee5200916058a2ca113c29f2d903571"
 "checksum getset 0.0.8 (registry+https://github.com/rust-lang/crates.io-index)" = "117a5b13aecd4e10161bb3feb22dda898e8552836c2391d8e4645d5e703ab866"
@@ -3673,6 +3707,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum miow 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "8c1f2f3b1cf331de6896aabf6e9d55dca90356cc9960cca7eaaf408a355ae919"
 "checksum mopa 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "a785740271256c230f57462d3b83e52f998433a7062fc18f96d5999474a9f915"
 "checksum nalgebra 0.18.1 (registry+https://github.com/rust-lang/crates.io-index)" = "aaa9fddbc34c8c35dd2108515587b8ce0cab396f17977b8c738568e4edb521a2"
+"checksum nalgebra 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0abb021006c01b126a936a8dd1351e0720d83995f4fc942d0d426c654f990745"
 "checksum net2 0.2.33 (registry+https://github.com/rust-lang/crates.io-index)" = "42550d9fb7b6684a6d404d9fa7250c2eb2646df731d1c06afc06dcee9e1bcf88"
 "checksum nix 0.14.1 (registry+https://github.com/rust-lang/crates.io-index)" = "6c722bee1037d430d0f8e687bbdbf222f27cc6e4e68d5caf630857bb2b6dbdce"
 "checksum nodrop 0.1.14 (registry+https://github.com/rust-lang/crates.io-index)" = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
@@ -3731,6 +3766,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum rand_core 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7a6fdeb83b075e8266dcc8762c22776f6877a63111121f5f8c7411e5be7eed4b"
 "checksum rand_core 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "9c33a3c44ca05fa6f1807d8e6743f3824e8509beca625669633be0acbdf509dc"
 "checksum rand_core 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)" = "90bde5296fc891b0cef12a6d03ddccc162ce7b2aff54160af9338f8d40df6d19"
+"checksum rand_distr 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "96977acbdd3a6576fb1d27391900035bf3863d4a16422973a409b488cf29ffb2"
 "checksum rand_hc 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7b40677c7be09ae76218dc623efbf7b18e34bced3f38883af07bb75630a21bc4"
 "checksum rand_hc 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ca3129af7b92a17112d59ad498c6f81eaf463253766b90396d39ea7a39d6613c"
 "checksum rand_isaac 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "ded997c9d5f13925be2a6fd7e66bf1872597f759fd9dd93513dd7e92e5a5ee08"
