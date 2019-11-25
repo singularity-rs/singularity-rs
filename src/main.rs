@@ -1,3 +1,5 @@
+#![feature(type_ascription)]
+
 use amethyst::{
     assets::{HotReloadBundle, Processor},
     audio::Source,
@@ -15,6 +17,8 @@ use amethyst::{
 use amethyst_imgui::RenderImgui;
 
 extern crate rand;
+extern crate imgui_inspect;
+extern crate imgui_inspect_derive;
 
 mod events;
 mod game;
@@ -73,8 +77,8 @@ pub fn main() -> amethyst::Result<()> {
         )
         // This system is in 'events.rs'. Basically, it registers UI events that
         // happen. Without it, the buttons will not react.
-        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(
-app_root.join("config/input.ron"))?)?
+        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(app_root.join("config/input.ron"))?)?
+        .with(crate::game_ui::ImguiDemoSystem, "imgui", &[])
         // Without this, we would not get a picture.
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
@@ -94,7 +98,6 @@ app_root.join("config/input.ron"))?)?
                 .with_plugin(RenderFlat2D::default())
                 // For using ImGui
                 .with_plugin(RenderImgui::<amethyst::input::StringBindings>::default()),
-
         )?;
 
     // creating the Application with the assets_dir, the first Screen, and the game_data with it's

@@ -18,6 +18,7 @@ impl<'s> System<'s> for GUnitMovementSystem {
     );
 
     fn run(&mut self, (mut transforms, mut gunits, mut _debug_lines): Self::SystemData) {
+        println!("Moving Units");
         for (gunit, trans) in (&mut gunits, &mut transforms).join() {
 
             if let Some(target) = &gunit.get_target_location() {

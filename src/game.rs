@@ -10,7 +10,6 @@ use amethyst::{
     ecs::prelude::{Entity, WorldExt, Dispatcher, DispatcherBuilder},
     input::{is_close_requested, is_key_down},
     prelude::*,
-    ui::UiCreator,
     renderer::{Camera, SpriteRender,
         debug_drawing::{// DebugLinesComponent, 
             DebugLines, DebugLinesParams}},
@@ -39,12 +38,6 @@ fn initialise_camera(world: &mut World) {
         .build();
 }
 
-fn initialize_ui(game: &mut Game, world: &mut World) {
-
-        game.ui_root =
-            Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/unit_distr.ron", ())));
-
-}
 
 fn initialize_platforms(world: &mut World) {
     world.register::<PlatformAttributes>();
@@ -67,6 +60,7 @@ pub struct Game<'a, 'b> {
     dispatcher: Option<Dispatcher<'a, 'b>>,
     paused: bool,
     ui_root: Option<Entity>,
+    my_struct: Option<crate::game_ui::MyStruct>,
 }
 
 impl<'a, 'b> SimpleState for Game<'a, 'b> {
@@ -102,7 +96,8 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // initializing ... mainly adding the required resources
         initialise_camera(&mut world);
-        initialize_ui(self, &mut world);
+
+
         initialize_platforms(&mut world);
         initialize_resources(&mut world);
         initialize_gunits(&mut world);
@@ -119,6 +114,10 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         dispatcher.setup(world);
 
         self.dispatcher = Some(dispatcher);
+
+        world.insert(crate::game_ui::MyStruct::default());
+
+        self.my_struct = Some(crate::game_ui::MyStruct::default());
 
 
         // ------------ DEBUG / TESTING -------------------------
