@@ -1,6 +1,6 @@
 use amethyst::{
     core::transform::Transform,
-    ecs::{Component, DenseVecStorage, World, WorldExt, Entity},
+    ecs::{Component, DenseVecStorage, Entity, World, WorldExt},
     prelude::*,
     renderer::{palette::Srgba, resources::Tint, SpriteRender},
 };

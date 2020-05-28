@@ -1,19 +1,18 @@
+use crate::distribution_manager::DistributionManager;
+use crate::gunit::tasks::Task;
+use crate::platform::platform::PlatformAttributes;
 use amethyst::{
-    core::transform::Transform,
     core::math::Vector3,
-    ecs::{Component, DenseVecStorage, VecStorage, World, WorldExt, Entity, ReadStorage},
+    core::transform::Transform,
+    ecs::{Component, DenseVecStorage, Entity, ReadStorage, VecStorage, World, WorldExt},
     prelude::*,
     renderer::{palette::Srgba, resources::Tint, SpriteRender},
 };
 use derivative::Derivative;
-use crate::gunit::tasks::Task;
-use crate::distribution_manager::DistributionManager;
-use crate::platform::platform::PlatformAttributes;
 
 pub const SLOWDOWN_DIST: f32 = 50.0;
 pub const ARRIVED_DIST: f32 = 1.0;
 pub const TARGET_OFFSET: f32 = 10.0;
-
 
 #[derive(Default)]
 pub struct Arrived;
@@ -22,14 +21,12 @@ impl Component for Arrived {
     type Storage = VecStorage<Self>;
 }
 
-
 #[derive(Debug, Derivative, Copy, Clone)]
 #[derivative(Default)]
 pub enum GUnitType {
     /// By default, any unit is Idle at first.
     #[derivative(Default)]
     Idle,
-
     // Carry,
     // Production,
     // Build,
@@ -37,7 +34,7 @@ pub enum GUnitType {
 }
 
 #[derive(Debug, Default, Copy, Clone)]
-pub struct GUnitAttributes{
+pub struct GUnitAttributes {
     gtype: GUnitType,
     /// The Task the Unit is working on
     task: Option<Task>,
@@ -57,9 +54,11 @@ pub struct GUnitAttributes{
 }
 
 impl GUnitAttributes {
-
     pub fn new() -> Self {
-        GUnitAttributes { velocity: 3.0, ..Default::default() }
+        GUnitAttributes {
+            velocity: 3.0,
+            ..Default::default()
+        }
     }
 
     #[inline]
@@ -82,54 +81,37 @@ impl GUnitAttributes {
         &self.on
     }
 
-    pub fn set_platform(
-        &mut self,
-        platform: Entity,
-    ) {
+    pub fn set_platform(&mut self, platform: Entity) {
         self.target_location = None;
         self.on = Some(platform);
     }
 
-    pub fn set_goal(
-        &mut self,
-        platform: Entity,
-    ) {
+    pub fn set_goal(&mut self, platform: Entity) {
         self.goal = Some(platform);
     }
 
-    pub fn set_target_platform(
-        &mut self,
-        platform: Entity,
-        target_location: Vector3<f32>,
-    ) {
+    pub fn set_target_platform(&mut self, platform: Entity, target_location: Vector3<f32>) {
         self.next = Some(platform);
         self.last = self.on;
         self.on = None;
         self.target_location = Some(target_location);
     }
 
-    pub fn update_starting_platform<'s>(
-        &mut self,
-        transform: &ReadStorage<'s, Transform>,
-    ) {
+    pub fn update_starting_platform<'s>(&mut self, transform: &ReadStorage<'s, Transform>) {
         if let Some(current) = self.on {
             let start_trans = transform.get(current).expect("25");
             self.starting_location = Some(*start_trans.translation());
         }
     }
 
-    pub fn arrive(
-        &mut self
-    ) {
+    pub fn arrive(&mut self) {
         self.on = self.next;
         self.next = None;
         self.target_location = None;
     }
 
     #[allow(dead_code)]
-    pub fn get_task(
-        &self
-    ) -> &Option<Task> {
+    pub fn get_task(&self) -> &Option<Task> {
         &self.task
     }
 
@@ -162,11 +144,9 @@ impl GUnitAttributes {
     }
 }
 
-
 impl Component for GUnitAttributes {
     type Storage = DenseVecStorage<Self>;
 }
-
 
 pub fn create_gunit(
     gunit: GUnitAttributes,
@@ -175,7 +155,6 @@ pub fn create_gunit(
     x: f32,
     y: f32,
 ) -> Entity {
-
     let mut trans = Transform::default();
     trans.set_translation_xyz(x, y, crate::layers::GeneralUnitLayer);
     *trans.scale_mut() *= 0.1;
@@ -195,53 +174,43 @@ pub fn create_gunit(
         .build()
 }
 
-
 // --------------------- Only for testing? ---------------------
 
 #[allow(dead_code)]
-pub fn unit_set_goal(
-    world: &mut World,
-    unit: Entity,
-    platform: Entity
-    ) {
-
+pub fn unit_set_goal(world: &mut World, unit: Entity, platform: Entity) {
     let mut gunit_attr_storage = world.write_storage::<GUnitAttributes>();
 
-    let unit_attrs = gunit_attr_storage.get_mut(unit).expect("Failed to get Unit Attributes from supposed Unit Entity");
+    let unit_attrs = gunit_attr_storage
+        .get_mut(unit)
+        .expect("Failed to get Unit Attributes from supposed Unit Entity");
 
     unit_attrs.set_goal(platform);
 }
 
 #[allow(dead_code)]
-pub fn unit_set_platform(
-    world: &mut World,
-    unit: Entity,
-    platform: Entity
-    ) {
-
+pub fn unit_set_platform(world: &mut World, unit: Entity, platform: Entity) {
     let mut gunit_attr_storage = world.write_storage::<GUnitAttributes>();
 
-    let unit_attrs = gunit_attr_storage.get_mut(unit).expect("Failed to get Unit Attributes from supposed Unit Entity");
+    let unit_attrs = gunit_attr_storage
+        .get_mut(unit)
+        .expect("Failed to get Unit Attributes from supposed Unit Entity");
 
     unit_attrs.set_platform(platform);
 }
 
 #[allow(dead_code)]
-pub fn unit_set_target_platform(
-    world: &mut World,
-    unit: Entity,
-    platform: Entity,
-    ) {
-
+pub fn unit_set_target_platform(world: &mut World, unit: Entity, platform: Entity) {
     let mut gunit_attr_storage = world.write_storage::<GUnitAttributes>();
 
-    let unit = gunit_attr_storage.get_mut(unit).expect("Failed to get Unit Attributes from supposed Unit Entity");
+    let unit = gunit_attr_storage
+        .get_mut(unit)
+        .expect("Failed to get Unit Attributes from supposed Unit Entity");
 
     let trans_store = world.read_storage::<Transform>();
 
-    let plat_trans = trans_store.get(platform).expect("Failed to get Transform from supposed Platform Entity");
+    let plat_trans = trans_store
+        .get(platform)
+        .expect("Failed to get Transform from supposed Platform Entity");
 
     unit.set_target_platform(platform, *plat_trans.translation());
 }
-
-

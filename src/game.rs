@@ -1,22 +1,27 @@
+use crate::distribution_manager::DistributionManager;
+use crate::gunit::general_unit::*;
 use crate::menu::pause::PauseMenuState;
 use crate::platform::platform::*;
 use crate::resources::*;
-use crate::gunit::general_unit::*;
 use crate::util::delete_hierarchy;
 use crate::util::load_sprite_sheet;
 use amethyst::{
     audio::output::init_output,
     core::{transform::Transform, ArcThreadPool},
-    ecs::prelude::{Entity, WorldExt, Dispatcher, DispatcherBuilder},
+    ecs::prelude::{Dispatcher, DispatcherBuilder, Entity, WorldExt},
     input::{is_close_requested, is_key_down},
     prelude::*,
-    renderer::{Camera, SpriteRender,
-        debug_drawing::{// DebugLinesComponent, 
-            DebugLines, DebugLinesParams}},
+    renderer::{
+        debug_drawing::{
+            // DebugLinesComponent,
+            DebugLines,
+            DebugLinesParams,
+        },
+        Camera, SpriteRender,
+    },
     winit::VirtualKeyCode,
 };
 use log::info;
-use crate::distribution_manager::DistributionManager;
 
 pub const ARENA_HEIGHT: f32 = 900.0;
 pub const ARENA_WIDTH: f32 = 1600.0;
@@ -37,7 +42,6 @@ fn initialise_camera(world: &mut World) {
         .named("camera")
         .build();
 }
-
 
 fn initialize_platforms(world: &mut World) {
     world.register::<PlatformAttributes>();
@@ -71,20 +75,18 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         world.insert(DebugLinesParams { line_width: 3.0 });
 
         let dispatcher_builder = DispatcherBuilder::new()
-            .with(crate::gunit::gunit_movement::GUnitMovementSystem::default(),
-                  "gunit_movement_system",
-                  &[],
+            .with(
+                crate::gunit::gunit_movement::GUnitMovementSystem::default(),
+                "gunit_movement_system",
+                &[],
             )
-            .with(crate::gunit::gunit_state_system::GUnitStateSystem::default(),
+            .with(
+                crate::gunit::gunit_state_system::GUnitStateSystem::default(),
                 "gunit_state_system",
                 &[],
             )
-            .with(crate::camera::CameraMovementSystem,
-                "camera_movement",
-                &[],
-            );
+            .with(crate::camera::CameraMovementSystem, "camera_movement", &[]);
         // add systems here
-
 
         let sprite_sheet = load_sprite_sheet(world, "ball");
 
@@ -97,7 +99,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         // initializing ... mainly adding the required resources
         initialise_camera(&mut world);
 
-
         initialize_platforms(&mut world);
         initialize_resources(&mut world);
         initialize_gunits(&mut world);
@@ -105,7 +106,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // needed for registering audio output.
         init_output(&mut world);
-
 
         // Build and setup the `Dispatcher`.
         let mut dispatcher = dispatcher_builder
@@ -119,9 +119,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         self.my_struct = Some(crate::game_ui::MyStruct::default());
 
-
         // ------------ DEBUG / TESTING -------------------------
-
 
         // this is only for debugging purposes
         let p1 = create_platform(
@@ -151,7 +149,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         connect_platforms(world, p1, p2);
         connect_platforms(world, p2, p3);
 
-
         let unit = create_gunit(
             GUnitAttributes::new(),
             world,
@@ -166,7 +163,6 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // unit_set_goal(world, unit, p3);
 
-
         let _res = create_resource(
             ResourceAttributes::new(ResourceType::Perl),
             world,
@@ -176,8 +172,7 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
         );
 
         // resource_set_platform(world, res, p3)
-
-   }
+    }
 
     fn on_pause(&mut self, _data: StateData<'_, GameData<'_, '_>>) {
         self.paused = true;
@@ -226,12 +221,10 @@ impl<'a, 'b> SimpleState for Game<'a, 'b> {
 
         // it is important that the 'paused' field is actually pausing your game.
         if !self.paused {
-
             if let Some(dispatcher) = self.dispatcher.as_mut() {
                 dispatcher.dispatch(world);
             }
         }
-
 
         Trans::None
     }

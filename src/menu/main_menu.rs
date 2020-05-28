@@ -8,10 +8,10 @@ use amethyst::{
 
 use log::info;
 
-use crate::menu::credits::CreditsScreen;
 use crate::game::Game;
-use crate::util::delete_hierarchy;
+use crate::menu::credits::CreditsScreen;
 use crate::menu::welcome::WelcomeScreen;
+use crate::util::delete_hierarchy;
 
 const BUTTON_START: &str = "start";
 const BUTTON_LOAD: &str = "load";

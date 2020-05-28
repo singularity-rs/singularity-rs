@@ -7,7 +7,7 @@ use amethyst::{
     input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
-        plugins::{RenderFlat2D, RenderToWindow, RenderDebugLines},
+        plugins::{RenderDebugLines, RenderFlat2D, RenderToWindow},
         types::DefaultBackend,
         RenderingBundle,
     },
@@ -16,23 +16,22 @@ use amethyst::{
 };
 use amethyst_imgui::RenderImgui;
 
-extern crate rand;
 extern crate imgui_inspect;
 extern crate imgui_inspect_derive;
+extern crate rand;
 
+mod camera;
+mod distribution_manager;
 mod events;
 mod game;
+mod game_ui;
+mod gunit;
 mod layers;
 mod menu;
-mod resources;
-mod util;
-mod roads;
-mod distribution_manager;
 mod platform;
-mod gunit;
-mod camera;
-mod game_ui;
-
+mod resources;
+mod roads;
+mod util;
 
 /// Quick overview what you can do when running this example:
 ///
@@ -77,7 +76,10 @@ pub fn main() -> amethyst::Result<()> {
         )
         // This system is in 'events.rs'. Basically, it registers UI events that
         // happen. Without it, the buttons will not react.
-        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(app_root.join("config/input.ron"))?)?
+        .with_bundle(
+            InputBundle::<StringBindings>::new()
+                .with_bindings_from_file(app_root.join("config/input.ron"))?,
+        )?
         .with(crate::game_ui::ImguiDemoSystem, "imgui", &[])
         // Without this, we would not get a picture.
         .with_bundle(

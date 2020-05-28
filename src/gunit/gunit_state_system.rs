@@ -1,11 +1,11 @@
+use crate::distribution_manager::*;
+use crate::gunit::general_unit::*;
+use crate::platform::platform::PlatformAttributes;
 use amethyst::{
     core::Transform,
-    ecs::prelude::{System, WriteStorage, Write, ReadStorage},
+    ecs::prelude::{ReadStorage, System, Write, WriteStorage},
     ecs::Join,
 };
-use crate::gunit::general_unit::*;
-use crate::distribution_manager::*;
-use crate::platform::platform::PlatformAttributes;
 
 #[derive(Default)]
 pub struct GUnitStateSystem;
@@ -24,6 +24,3 @@ impl<'s> System<'s> for GUnitStateSystem {
         }
     }
 }
-
-
-

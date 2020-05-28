@@ -1,9 +1,7 @@
-use amethyst::{
-    ecs::Entity,
-};
 use crate::gunit::general_unit::GUnitType;
 use crate::platform::platform_actions::PlatformActionType;
 use crate::resources::ResourceType;
+use amethyst::ecs::Entity;
 
 /// A `Task` has one of the following configurations, based on GUnitType:
 /// Idle:
@@ -30,4 +28,3 @@ pub struct Task {
     pub resource_type: Option<ResourceType>,
     pub action: Option<PlatformActionType>,
 }
-

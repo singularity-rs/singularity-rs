@@ -1,17 +1,14 @@
-
-use amethyst_imgui::imgui::*;
+use amethyst::ecs::{System, Write};
 use amethyst_imgui::imgui;
-use amethyst::ecs::{Write, System};
+use amethyst_imgui::imgui::*;
 use imgui_inspect::*;
 use imgui_inspect_derive::*;
-
 
 #[derive(Default, Inspect)]
 pub struct MyStruct {
     pub first_value: f32,
     pub second_value: f32,
 }
-
 
 // #[derive(Default, Inspect)]
 // // #[derive(Default)]
@@ -26,15 +23,10 @@ pub struct MyStruct {
 //     pub turbo: bool,
 // }
 
-
-
-
 pub struct ImguiDemoSystem;
 
 impl<'s> amethyst::ecs::System<'s> for ImguiDemoSystem {
-    type SystemData = (
-        Write<'s, MyStruct>,
-        );
+    type SystemData = (Write<'s, MyStruct>,);
     fn run(&mut self, (mut graph_selector,): Self::SystemData) {
         amethyst_imgui::with(|ui| {
             ui.text(im_str!("Hello world!"));
@@ -49,10 +41,19 @@ impl<'s> amethyst::ecs::System<'s> for ImguiDemoSystem {
             ui.separator();
             let my_struct = graph_selector;
             // render::<MyStruct>(&[&my_struct], &"test", ui, &InspectArgsDefault::default());
-            <MyStruct as InspectRenderDefault<MyStruct>>::render(&[&my_struct], &"test", ui, &InspectArgsDefault::default());
+            <MyStruct as InspectRenderDefault<MyStruct>>::render(
+                &[&my_struct],
+                &"test",
+                ui,
+                &InspectArgsDefault::default(),
+            );
 
-            <u32 as InspectRenderDefault<u32>>::render(&[&5u32], &"test", ui, &InspectArgsDefault::default());
+            <u32 as InspectRenderDefault<u32>>::render(
+                &[&5u32],
+                &"test",
+                ui,
+                &InspectArgsDefault::default(),
+            );
         });
     }
 }
-

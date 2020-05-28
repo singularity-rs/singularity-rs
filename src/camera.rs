@@ -1,15 +1,8 @@
 use amethyst::{
-    core::{
-        math::Vector3,
-        Transform,
-    },
-    ecs::{
-        Entities, Join, Read, ReadStorage, System, WriteStorage,
-    },
+    core::{math::Vector3, Transform},
+    ecs::{Entities, Join, Read, ReadStorage, System, WriteStorage},
     input::{InputHandler, StringBindings},
-    renderer::{
-        camera::{ActiveCamera, Camera},
-    },
+    renderer::camera::{ActiveCamera, Camera},
 };
 
 #[derive(Default)]
@@ -48,4 +41,3 @@ impl<'s> System<'s> for CameraMovementSystem {
         }
     }
 }
-

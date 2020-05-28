@@ -1,9 +1,9 @@
 use amethyst::{
-    core::transform::Transform,
-    ecs::{Component, DenseVecStorage, World, WorldExt, Entity},
-    prelude::*,
     core::math::Point,
-    renderer::{palette::Srgba, resources::Tint, SpriteRender, debug_drawing::DebugLinesComponent},
+    core::transform::Transform,
+    ecs::{Component, DenseVecStorage, Entity, World, WorldExt},
+    prelude::*,
+    renderer::{debug_drawing::DebugLinesComponent, palette::Srgba, resources::Tint, SpriteRender},
 };
 use derivative::Derivative;
 
@@ -37,11 +37,10 @@ pub enum PlatformType {
 }
 
 #[derive(Debug, Default)]
-pub struct PlatformAttributes{
+pub struct PlatformAttributes {
     platform_type: PlatformType,
     connected: Vec<Entity>,
 }
-
 
 impl PlatformAttributes {
     pub fn get_connected(&self) -> &Vec<Entity> {
@@ -56,7 +55,6 @@ pub fn create_platform(
     x: f32,
     y: f32,
 ) -> Entity {
-
     let mut trans = Transform::default();
     trans.set_translation_xyz(x, y, crate::layers::BasePlatformLayer);
     *trans.scale_mut() *= 0.25;
@@ -77,23 +75,21 @@ pub fn create_platform(
         .build()
 }
 
-pub fn connect_platforms(
-    world: &mut World,
-    p1: Entity,
-    p2: Entity,
-    ) {
-
+pub fn connect_platforms(world: &mut World, p1: Entity, p2: Entity) {
     let mut platform_attr_storage = world.write_storage::<PlatformAttributes>();
     let loc_storage = world.read_storage::<Transform>();
 
-    let p1_attrs = platform_attr_storage.get_mut(p1).expect("Failed to get Platform Attributes from supposed Platform Entity");
+    let p1_attrs = platform_attr_storage
+        .get_mut(p1)
+        .expect("Failed to get Platform Attributes from supposed Platform Entity");
     let mut p1_loc = loc_storage.get(p1).expect("24").clone();
     p1_loc.set_translation_z(crate::layers::RoadLayer);
 
     p1_attrs.connected.push(p2);
 
-
-    let p2_attrs = platform_attr_storage.get_mut(p2).expect("Failed to get Platform Attributes from supposed Platform Entity");
+    let p2_attrs = platform_attr_storage
+        .get_mut(p2)
+        .expect("Failed to get Platform Attributes from supposed Platform Entity");
     let mut p2_loc = loc_storage.get(p2).expect("25").clone();
     p2_loc.set_translation_z(crate::layers::RoadLayer);
 
@@ -101,24 +97,18 @@ pub fn connect_platforms(
 
     let mut lines = DebugLinesComponent::new();
 
-    lines
-        .add_line(
-            Point::from(*p1_loc.translation()),
-            Point::from(*p2_loc.translation()),
-            Srgba::new(0.0, 0.0, 0.0, 1.0)
-        );
+    lines.add_line(
+        Point::from(*p1_loc.translation()),
+        Point::from(*p2_loc.translation()),
+        Srgba::new(0.0, 0.0, 0.0, 1.0),
+    );
 
     drop(platform_attr_storage);
     drop(loc_storage);
 
-    world
-        .create_entity()
-        .with(lines)
-        .build();
+    world.create_entity().with(lines).build();
 }
-
 
 impl Component for PlatformAttributes {
     type Storage = DenseVecStorage<Self>;
 }
-
